@@ -23,3 +23,70 @@
 .nav-list li a:hover {
   text-decoration: underline;
 }
+
+/* Form container */
+.booking-container,
+.login-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  /* background-color: #774242; */
+  border-radius: 8px;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+}
+
+h1,
+h2 {
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.2rem;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #555;
+}
+
+/* Bookings list styling */
+.bookings-list {
+  margin-top: 2rem;
+}
+
+.bookings-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.bookings-list li {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
