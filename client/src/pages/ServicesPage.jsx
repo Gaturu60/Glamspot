@@ -13,7 +13,7 @@ function ServicesPage() {
 
   return (
     <div className="services-container">
-      <h1>Our Services</h1>
+      <h1>Services offered</h1>
       <ul>
         {services.map((service) => (
           <li key={service.id}>
