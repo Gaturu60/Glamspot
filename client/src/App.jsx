@@ -9,6 +9,10 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/stylists" element={<StylistsPage />} />
+        <Route path="/bookings" element={<BookingPage />} />
+        <Route path="/login" element={<LoginPage />} />
       </Routes>
     </Router>
   );
