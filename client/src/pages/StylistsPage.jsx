@@ -13,7 +13,7 @@ function StylistsPage() {
 
   return (
     <div className="stylists-container">
-      <h1>These are our available stylists</h1>
+      <h1>These Stylists are Available</h1>
       <ul>
         {stylists.map((stylist) => (
           <li key={stylist.id}>{stylist.name}</li>
