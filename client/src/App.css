@@ -1,3 +1,23 @@
+/* body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #d3d3d3;
+} */
+
+footer {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+.App {
+  display: flexbox;
+  flex-direction: column;
+  min-height: 100vh;
+  align-self: center;
+}
 /* Navbar styling */
 .navbar {
   background-color: #333;

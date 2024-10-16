@@ -54,7 +54,7 @@ function BookingPage() {
               date: values.date,
             }),
           })
-            .then(() => alert("Booking successfully created!"))
+            .then(() => alert("Booking Successful!"))
             .catch((error) => console.error("Error creating booking:", error));
         })
         .catch((error) => console.error("Error creating user:", error));

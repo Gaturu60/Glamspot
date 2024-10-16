@@ -5,19 +5,23 @@ import ServicesPage from "./pages/ServicesPage";
 import StylistsPage from "./pages/StylistsPage";
 import BookingPage from "./pages/BookingPage";
 import LoginPage from "./pages/LoginPage";
+import Footer from "./components/Footer";
 import "./App.css";
 
 function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/services" element={<ServicesPage />} />
-        <Route path="/stylists" element={<StylistsPage />} />
-        <Route path="/bookings" element={<BookingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Routes>
+      <div className="App">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/stylists" element={<StylistsPage />} />
+          <Route path="/bookings" element={<BookingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+        <Footer />
+      </div>
     </Router>
   );
 }
