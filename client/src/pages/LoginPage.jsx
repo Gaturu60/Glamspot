@@ -1,18 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import { useFormik } from "formik";
 
 function LoginPage() {
-  const [userBookings, setUserBookings] = useState([]);
-
-  // Formik form for login
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     onSubmit: (values) => {
-      // Log in the user
-      // Replace with backend API endpoint
       fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -20,23 +15,19 @@ function LoginPage() {
       })
         .then((response) => response.json())
         .then((userData) => {
-          // Fetch the user's bookings after login
-          // Replace with backend API endpoint
-          fetch(`/api/users/${userData.id}/bookings`)
-            .then((response) => response.json())
-            .then((bookings) => setUserBookings(bookings))
-            .catch((error) => console.error("Error fetching bookings:", error));
+          // Handle successful login, e.g., redirect or set user context
+          console.log("Login successful:", userData);
         })
         .catch((error) => console.error("Error logging in:", error));
     },
   });
 
   return (
-    <div className="login-container">
-      <h1>User Login</h1>
+    <div className="container p-6">
+      <h1 className="text-3xl font-bold text-center text-primary mb-6">User Login</h1>
       <form onSubmit={formik.handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
           <input
             id="email"
             name="email"
@@ -44,11 +35,12 @@ function LoginPage() {
             onChange={formik.handleChange}
             value={formik.values.email}
             required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
+        <div className="mb-4">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
           <input
             id="password"
             name="password"
@@ -56,23 +48,17 @@ function LoginPage() {
             onChange={formik.handleChange}
             value={formik.values.password}
             required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           />
         </div>
 
-        <button type="submit">Login</button>
+        <button 
+          type="submit" 
+          className="w-full p-3 bg-primary text-white font-bold rounded-md hover:bg-secondary transition duration-200"
+        >
+          Login
+        </button>
       </form>
-
-      <div className="bookings-list">
-        <h2>Your Bookings</h2>
-        <ul>
-          {userBookings.map((booking) => (
-            <li key={booking.id}>
-              {booking.service_name} with {booking.stylist_name} on{" "}
-              {booking.date}
-            </li>
-          ))}
-        </ul>
-      </div>
     </div>
   );
 }
