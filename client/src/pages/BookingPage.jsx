@@ -22,7 +22,7 @@ function BookingPage() {
       name: "",
       email: "",
       password: "",
-      service: "",
+      service_ids: "",
       stylist: "",
       date: "",
     },
@@ -57,10 +57,17 @@ function BookingPage() {
 
   return (
     <div className="container p-6">
-      <h1 className="text-3xl font-bold text-center text-primary mb-6">Book an Appointment</h1>
+      <h1 className="text-3xl font-bold text-center text-primary mb-6">
+        Book an Appointment
+      </h1>
       <form onSubmit={formik.handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Name
+          </label>
           <input
             id="name"
             name="name"
@@ -72,7 +79,12 @@ function BookingPage() {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Email
+          </label>
           <input
             id="email"
             name="email"
@@ -84,7 +96,12 @@ function BookingPage() {
           />
         </div>
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Password
+          </label>
           <input
             id="password"
             name="password"
@@ -97,16 +114,21 @@ function BookingPage() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="service" className="block text-sm font-medium text-gray-700">Service</label>
+          <label
+            htmlFor="service"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Service
+          </label>
           <select
             id="service"
-            name="service"
+            name="service_ids"
             onChange={formik.handleChange}
             value={formik.values.service}
             required
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           >
-            <option value="">Select a service</option>
+            <option value="">Select service/services...</option>
             {services.map((service) => (
               <option key={service.id} value={service.id}>
                 {service.name}
@@ -116,7 +138,12 @@ function BookingPage() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="stylist" className="block text-sm font-medium text-gray-700">Stylist</label>
+          <label
+            htmlFor="stylist"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Stylist
+          </label>
           <select
             id="stylist"
             name="stylist"
@@ -135,7 +162,12 @@ function BookingPage() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
+          <label
+            htmlFor="date"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Date
+          </label>
           <input
             id="date"
             name="date"
