@@ -22,7 +22,7 @@ function BookingPage() {
       name: "",
       email: "",
       password: "",
-      service_ids: "",
+      service: "",
       stylist: "",
       date: "",
     },
@@ -122,13 +122,13 @@ function BookingPage() {
           </label>
           <select
             id="service"
-            name="service_ids"
+            name="service"
             onChange={formik.handleChange}
             value={formik.values.service}
             required
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           >
-            <option value="">Select service/services...</option>
+            <option value="">Select a service</option>
             {services.map((service) => (
               <option key={service.id} value={service.id}>
                 {service.name}
