@@ -1,11 +1,8 @@
 function HomePage() {
   return (
-    <div className="home-container">
-      <h1>Welcome to Glamspot!</h1>
-      <p>
-        Discover a wide range of salon services, choose from our talented
-        stylists, and book your next appointment with ease.
-      </p>
+    <div className="text-center py-20">
+      <h1 className="text-5xl font-bold text-purple-700">Welcome to Glamspot</h1>
+      <p className="mt-4 text-lg text-gray-600">Your one-stop salon for all your beauty needs!</p>
     </div>
   );
 }

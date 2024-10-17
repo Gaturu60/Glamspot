@@ -5,20 +5,18 @@ function BookingPage() {
   const [services, setServices] = useState([]);
   const [stylists, setStylists] = useState([]);
 
-  // Fetch services and stylists from the backend
   useEffect(() => {
-    fetch("/api/services") // Replace with backend api endpoint
+    fetch("/api/services")
       .then((response) => response.json())
       .then((data) => setServices(data))
       .catch((error) => console.error("Error fetching services:", error));
 
-    fetch("/api/stylists/available") // Replace with backend api endpoint
+    fetch("/api/stylists/available")
       .then((response) => response.json())
       .then((data) => setStylists(data))
       .catch((error) => console.error("Error fetching stylists:", error));
   }, []);
 
-  // Formik form for user registration and booking creation
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -29,8 +27,6 @@ function BookingPage() {
       date: "",
     },
     onSubmit: (values) => {
-      // First create the user, then create the booking
-      // Replace with backend api endpoint
       fetch("/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,8 +38,6 @@ function BookingPage() {
       })
         .then((response) => response.json())
         .then((userData) => {
-          // After user creation, create the booking
-          // Replace with backend api endpoint
           fetch("/api/bookings", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -54,7 +48,7 @@ function BookingPage() {
               date: values.date,
             }),
           })
-            .then(() => alert("Booking successfully created!"))
+            .then(() => alert("Booking Successful!"))
             .catch((error) => console.error("Error creating booking:", error));
         })
         .catch((error) => console.error("Error creating user:", error));
@@ -62,12 +56,11 @@ function BookingPage() {
   });
 
   return (
-    <div className="booking-container">
-      <h1>Book an Appointment</h1>
+    <div className="container p-6">
+      <h1 className="text-3xl font-bold text-center text-primary mb-6">Book an Appointment</h1>
       <form onSubmit={formik.handleSubmit}>
-        {/* User Information */}
-        <div className="form-group">
-          <label htmlFor="name">Name</label>
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
           <input
             id="name"
             name="name"
@@ -75,10 +68,11 @@ function BookingPage() {
             onChange={formik.handleChange}
             value={formik.values.name}
             required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
           <input
             id="email"
             name="email"
@@ -86,10 +80,11 @@ function BookingPage() {
             onChange={formik.handleChange}
             value={formik.values.email}
             required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           />
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
+        <div className="mb-4">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
           <input
             id="password"
             name="password"
@@ -97,18 +92,19 @@ function BookingPage() {
             onChange={formik.handleChange}
             value={formik.values.password}
             required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           />
         </div>
 
-        {/* Booking Information */}
-        <div className="form-group">
-          <label htmlFor="service">Service</label>
+        <div className="mb-4">
+          <label htmlFor="service" className="block text-sm font-medium text-gray-700">Service</label>
           <select
             id="service"
             name="service"
             onChange={formik.handleChange}
             value={formik.values.service}
             required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           >
             <option value="">Select a service</option>
             {services.map((service) => (
@@ -119,14 +115,15 @@ function BookingPage() {
           </select>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="stylist">Stylist</label>
+        <div className="mb-4">
+          <label htmlFor="stylist" className="block text-sm font-medium text-gray-700">Stylist</label>
           <select
             id="stylist"
             name="stylist"
             onChange={formik.handleChange}
             value={formik.values.stylist}
             required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           >
             <option value="">Select a stylist</option>
             {stylists.map((stylist) => (
@@ -137,19 +134,25 @@ function BookingPage() {
           </select>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="date">Appointment Date</label>
+        <div className="mb-4">
+          <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
           <input
             id="date"
             name="date"
-            type="datetime-local"
+            type="date"
             onChange={formik.handleChange}
             value={formik.values.date}
             required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           />
         </div>
 
-        <button type="submit">Book Appointment</button>
+        <button
+          type="submit"
+          className="w-full p-3 bg-primary text-white font-bold rounded-md hover:bg-secondary transition duration-200"
+        >
+          Book Appointment
+        </button>
       </form>
     </div>
   );
