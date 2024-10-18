@@ -181,7 +181,7 @@ function BookingPage() {
 
         <button
           type="submit"
-          className="w-full p-3 bg-primary text-white font-bold rounded-md hover:bg-secondary transition duration-200"
+          className="w-auto px-4 py-2 bg-primary text-white text-base font-bold rounded-md hover:bg-secondary transition duration-200" //
         >
           Book Appointment
         </button>

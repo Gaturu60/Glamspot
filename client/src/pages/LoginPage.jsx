@@ -24,10 +24,17 @@ function LoginPage() {
 
   return (
     <div className="container p-6">
-      <h1 className="text-3xl font-bold text-center text-primary mb-6">User Login</h1>
+      <h1 className="text-3xl font-bold text-center text-primary mb-6">
+        User Login
+      </h1>
       <form onSubmit={formik.handleSubmit}>
         <div className="mb-4">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Email
+          </label>
           <input
             id="email"
             name="email"
@@ -40,7 +47,12 @@ function LoginPage() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Password
+          </label>
           <input
             id="password"
             name="password"
@@ -52,9 +64,9 @@ function LoginPage() {
           />
         </div>
 
-        <button 
-          type="submit" 
-          className="w-full p-3 bg-primary text-white font-bold rounded-md hover:bg-secondary transition duration-200"
+        <button
+          type="submit"
+          className="w-auto px-4 py-2 bg-primary text-white text-base font-bold rounded-md hover:bg-secondary transition duration-200"
         >
           Login
         </button>
