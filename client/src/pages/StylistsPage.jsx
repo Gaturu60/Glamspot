@@ -11,17 +11,17 @@ function StylistsPage() {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        return response.json(); // Ensure the response is parsed as JSON
+        return response.json();
       })
       .then((data) => {
         // Handle the case where 'stylists' may not exist in the response
-        setStylists(data.stylists || []); // Use '|| []' to avoid errors if 'stylists' is undefined
+        setStylists(data.stylists || []);
       })
       .catch((error) => {
         console.error("Error fetching stylists:", error);
         setStylists([]); // Optional: Set an empty array in case of error
       });
-  }, []); // Empty dependency array ensures the effect runs once when the component mounts
+  }, []);
 
   // If stylists is not an array, ensure rendering doesn't break by checking its type
   if (!Array.isArray(stylists)) {
