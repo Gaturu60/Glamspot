@@ -5,15 +5,16 @@ function BookingPage() {
   const [services, setServices] = useState([]);
   const [stylists, setStylists] = useState([]);
 
+  // Fetch services and stylists from the backend
   useEffect(() => {
-    fetch("/api/services")
+    fetch("http://127.0.0.1:5000/services")
       .then((response) => response.json())
-      .then((data) => setServices(data))
+      .then((data) => setServices(data.services))
       .catch((error) => console.error("Error fetching services:", error));
 
-    fetch("/api/stylists/available")
+    fetch("http://127.0.0.1:5000/stylists")
       .then((response) => response.json())
-      .then((data) => setStylists(data))
+      .then((data) => setStylists(data.stylists))
       .catch((error) => console.error("Error fetching stylists:", error));
   }, []);
 
@@ -27,7 +28,8 @@ function BookingPage() {
       date: "",
     },
     onSubmit: (values) => {
-      fetch("/api/users", {
+      // First create the user
+      fetch("http://127.0.0.1:5000/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -38,18 +40,26 @@ function BookingPage() {
       })
         .then((response) => response.json())
         .then((userData) => {
-          fetch("/api/bookings", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              user_id: userData.id,
-              service_id: values.service,
-              stylist_id: values.stylist,
-              date: values.date,
-            }),
-          })
-            .then(() => alert("Booking Successful!"))
-            .catch((error) => console.error("Error creating booking:", error));
+          console.log("User created:", userData);
+          if (userData && userData.id) {
+            // After creating the user, create the booking with the user_id
+            fetch("http://127.0.0.1:5000/bookings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_id: userData.id, // Add user_id from created user
+                service_id: values.service, // Ensure valid service ID
+                stylist_id: values.stylist, // Ensure valid stylist ID
+                date_time: `${values.date}T00:00:00`, // Ensure valid datetime format
+              }),
+            })
+              .then(() => alert("Booking successfully created!"))
+              .catch((error) =>
+                console.error("Error creating booking:", error)
+              );
+          } else {
+            console.error("Error: User ID is missing");
+          }
         })
         .catch((error) => console.error("Error creating user:", error));
     },
@@ -61,6 +71,7 @@ function BookingPage() {
         Book an Appointment
       </h1>
       <form onSubmit={formik.handleSubmit}>
+        {/* User Information */}
         <div className="mb-4">
           <label
             htmlFor="name"
@@ -113,6 +124,7 @@ function BookingPage() {
           />
         </div>
 
+        {/* Booking Information */}
         <div className="mb-4">
           <label
             htmlFor="service"
@@ -181,7 +193,7 @@ function BookingPage() {
 
         <button
           type="submit"
-          className="w-auto px-4 py-2 bg-primary text-white text-base font-bold rounded-md hover:bg-secondary transition duration-200" //
+          className="w-auto px-4 py-2 bg-primary text-white text-base font-bold rounded-md hover:bg-secondary transition duration-200"
         >
           Book Appointment
         </button>
