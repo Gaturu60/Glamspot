@@ -67,7 +67,7 @@ class BookingResource(Resource):
 # Define RESTful resources and routes
 api.add_resource(UserResource, '/users', '/users/<int:id>')
 api.add_resource(StylistResource, '/stylists', '/stylists/<int:id>')  # type: ignore
-api.add_resource(ServiceResource, '/services', '/services/<int:id>')  # type: ignore
+api.add_resource(ServiceResource, '/services', '/services/<int:id>')  
 api.add_resource(BookingResource, '/bookings', '/bookings/<int:id>')
 
 # Index route (renamed)
@@ -77,4 +77,4 @@ def home():
 
 # Entry point for the app
 if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    app.run(port=5000, debug=True)
