@@ -42,10 +42,10 @@ if __name__ == '__main__':
             services.append(service)
         db.session.bulk_save_objects(services)
 
-        # Seed bookings (previously appointments)
+        # Seed bookings
         bookings = []
         for _ in range(20):
-            booking = Booking(  # Changed to Booking
+            booking = Booking(  
                 user_id=randint(1, 10),
                 stylist_id=randint(1, 5),
                 service_id=randint(1, len(services)),
