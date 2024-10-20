@@ -56,103 +56,96 @@ function BookingPage() {
   });
 
   return (
-    <div style={{ 
-      backgroundImage: 'url(/images/pexels-pixabay-219550.jpg)', 
-      backgroundSize: 'cover', 
-      backgroundPosition: 'center', 
-      height: '100vh' 
-    }}>
-      <section className="flex flex-col items-center justify-center h-full bg-black bg-opacity-50 text-white">
-        <div className="container p-6 bg-white bg-opacity-90 rounded-lg shadow-lg max-w-md mx-auto mt-10">
-          <h1 className="text-3xl font-bold text-center text-blue-500 mb-6">Book an Appointment</h1>
-          <form onSubmit={formik.handleSubmit}>
-            <div className="mb-4">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                onChange={formik.handleChange}
-                value={formik.values.name}
-                required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                onChange={formik.handleChange}
-                value={formik.values.email}
-                required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-              />
-            </div>
+    <div className="container p-6">
+      <h1 className="text-3xl font-bold text-center text-primary mb-6">Book an Appointment</h1>
+      <form onSubmit={formik.handleSubmit}>
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            onChange={formik.handleChange}
+            value={formik.values.name}
+            required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            onChange={formik.handleChange}
+            value={formik.values.email}
+            required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            onChange={formik.handleChange}
+            value={formik.values.password}
+            required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+          />
+        </div>
 
-            <div className="mb-4">
-              <label htmlFor="service" className="block text-sm font-medium text-gray-700">Service</label>
-              <select
-                id="service"
-                name="service"
-                onChange={formik.handleChange}
-                value={formik.values.service}
-                required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-              >
-                <option value="">Select a service</option>
-                {services.map((service) => (
-                  <option key={service.id} value={service.id}>
-                    {service.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <div className="mb-4">
+          <label htmlFor="service" className="block text-sm font-medium text-gray-700">Service</label>
+          <select
+            id="service"
+            name="service"
+            onChange={formik.handleChange}
+            value={formik.values.service}
+            required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+          >
+            <option value="">Select a service</option>
+            {services.map((service) => (
+              <option key={service.id} value={service.id}>
+                {service.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-            <div className="mb-4">
-              <label htmlFor="stylist" className="block text-sm font-medium text-gray-700">Stylist</label>
-              <select
-                id="stylist"
-                name="stylist"
-                onChange={formik.handleChange}
-                value={formik.values.stylist}
-                required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-              >
-                <option value="">Select a stylist</option>
-                {stylists.map((stylist) => (
-                  <option key={stylist.id} value={stylist.id}>
-                    {stylist.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <div className="mb-4">
+          <label htmlFor="stylist" className="block text-sm font-medium text-gray-700">Stylist</label>
+          <select
+            id="stylist"
+            name="stylist"
+            onChange={formik.handleChange}
+            value={formik.values.stylist}
+            required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+          >
+            <option value="">Select a stylist</option>
+            {stylists.map((stylist) => (
+              <option key={stylist.id} value={stylist.id}>
+                {stylist.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-            <div className="mb-4">
-              <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
-              <input
-                id="date"
-                name="date"
-                type="date"
-                onChange={formik.handleChange}
-                value={formik.values.date}
-                required
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2"
-              />
-            </div>
+        <div className="mb-4">
+          <label htmlFor="date" className="block text-sm font-medium text-gray-700">Date</label>
+          <input
+            id="date"
+            name="date"
+            type="date"
+            onChange={formik.handleChange}
+            value={formik.values.date}
+            required
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+          />
+        </div>
 
             <button
               type="submit"
