@@ -11,11 +11,11 @@ function StylistsPage() {
   }, []);
 
   return (
-    <div className="container p-6">
-      <h1 className="text-3xl font-bold text-center text-primary mb-6">These Stylists are Available</h1>
-      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="py-16 bg-gray-800 text-white">
+      <h1 className="text-4xl font-bold text-center mb-8">Available Stylists</h1>
+      <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 container mx-auto">
         {stylists.map((stylist) => (
-          <li key={stylist.id} className="list-item p-4 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105">
+          <li key={stylist.id} className="p-6 bg-gray-600 rounded-lg shadow-lg transition-transform transform hover:scale-105">
             <h2 className="font-semibold text-lg">{stylist.name}</h2>
           </li>
         ))}

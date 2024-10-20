@@ -6,22 +6,21 @@ import BookingPage from "./pages/BookingPage";
 import ServicesPage from "./pages/ServicesPage";
 import StylistsPage from "./pages/StylistsPage";
 import LoginPage from "./pages/LoginPage";
-import backgroundImage from './assets/background/pexels-david-geib-1265112-3268732.jpg';
-
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
     <div
       className="min-h-screen bg-cover bg-center"
       style={{
-        backgroundImage: `url(${backgroundImage})`, // Use the imported image here
+        backgroundImage: `url(/images/pexels-pixabay-219550.jpg)`, // Path for public folder
       }}
     >
       <Router>
         <Navbar />
         <div className="bg-white bg-opacity-90 min-h-screen">
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/stylists" element={<StylistsPage />} />
             <Route path="/bookings" element={<BookingPage />} />

@@ -2,22 +2,22 @@ import { Link } from "react-router-dom";
 
 function Navbar() {
   return (
-    <nav className="bg-purple-600 p-4 shadow-md">
-      <ul className="flex justify-around">
+    <nav className="bg-primary p-4 shadow-md">
+      <ul className="flex justify-around text-white">
         <li>
-          <Link to="/" className="text-white font-bold hover:underline">Home</Link>
+          <Link to="/" className="font-bold hover:underline">Home</Link>
         </li>
         <li>
-          <Link to="/services" className="text-white font-bold hover:underline">Services</Link>
+          <Link to="/services" className="font-bold hover:underline">Services</Link>
         </li>
         <li>
-          <Link to="/stylists" className="text-white font-bold hover:underline">Stylists</Link>
+          <Link to="/stylists" className="font-bold hover:underline">Stylists</Link>
         </li>
         <li>
-          <Link to="/bookings" className="text-white font-bold hover:underline">Bookings</Link>
+          <Link to="/bookings" className="font-bold hover:underline">Bookings</Link>
         </li>
         <li>
-          <Link to="/login" className="text-white font-bold hover:underline">Login</Link>
+          <Link to="/login" className="font-bold hover:underline">Login</Link>
         </li>
       </ul>
     </nav>
