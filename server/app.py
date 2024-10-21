@@ -7,8 +7,7 @@ from flask import request, jsonify
 from flask_cors import CORS
 from flask_restful import Resource  # type: ignore
 from datetime import datetime
-from flask_login import login_user
-from flask_login import LoginManager
+from flask_login import login_user, LoginManager, login_required, current_user
 import os
 
 # Local imports
@@ -37,6 +36,45 @@ def load_user(user_id):
     return User.query.get(int(user_id))  # Load user by ID
 
 # Flask-RESTful Resources
+class AdminUserResource(Resource):
+    # Restrict access to admins only
+    @login_required
+    def get(self):
+        if not current_user.is_admin():
+            return {"error": "Unauthorized"}, 403
+
+        users = User.query.all()
+        return jsonify([user.to_dict() for user in users])
+
+    @login_required
+    def delete(self, user_id):
+        if not current_user.is_admin():
+            return {"error": "Unauthorized"}, 403
+
+        user = User.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return {"message": "User deleted"}, 200
+        return {"error": "User not found"}, 404
+
+    @login_required
+    def patch(self, user_id):
+        if not current_user.is_admin():
+            return {"error": "Unauthorized"}, 403
+
+        user = User.query.get(user_id)
+        if not user:
+            return {"error": "User not found"}, 404
+
+        data = request.get_json()
+        if 'name' in data:
+            user.name = data['name']
+        if 'email' in data:
+            user.email = data['email']
+
+        db.session.commit()
+        return jsonify(user.to_dict()), 200
 class LoginResource(Resource):
     
     def options(self):
