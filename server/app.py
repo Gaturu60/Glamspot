@@ -6,6 +6,7 @@
 from flask import request
 from flask_restful import Resource  # type: ignore
 from datetime import datetime
+from flask_login import login_user
 
 # Local imports
 from config import app, db, api
@@ -17,6 +18,19 @@ from models import (
 )  # Ensure Booking replaces Appointment
 
 # Flask-RESTful Resources
+class LoginResource(Resource):
+    def post(self):
+        data=request.get_json()
+        email=data.get('email')
+        password=data.get('password')
+
+        user = User.query.filter_by(email=email).first()
+        if user is None or not user.check_password(password):
+            return {'error': 'Invalid credentials'}, 401
+        
+        login_user(user)
+
+        return {'message': 'Login successful', "user": user.to_dict()}, 200
 
 
 class UserResource(Resource):
