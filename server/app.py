@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request, jsonify, session
+from flask import request, session
 from flask_cors import CORS
 from flask_restful import Resource  # type: ignore
 from datetime import datetime
@@ -33,6 +33,14 @@ app.secret_key = os.urandom(28)
 # @login_manager.user_loader
 # def load_user(user_id):
 #     return User.query.get(int(user_id))  # Load user by ID
+
+@app.before_request
+def log_session_activity():
+    user_id = session.get('user_id')
+    if user_id:
+        print(f"Session active. User ID: {user_id}")
+    else:
+        print("No active session.")
 
 # Flask-RESTful Resources
 # class AdminUserResource(Resource):
@@ -111,7 +119,7 @@ class UserResource(Resource):
             
             new_user = User(name=data['name'], email=data['email'], role='user')
             new_user.set_password(data['password']) #Hash the password
-            
+
             db.session.add(new_user)
             db.session.commit()
             return new_user.to_dict(), 201
@@ -247,14 +255,20 @@ class LoginResource(Resource):
         email = data.get("email")
         password = data.get("password")
 
+        # Find user by email
         user = User.query.filter_by(email=email).first()
+
+        if user is None:
+            print(f"Login failed: No user found with email {email}")
+            return {"error": "Invalid email or password"}, 401
         
+        #Check if user exists and if password is correct
         if not user or not user.check_password(password):
             return {"error": "Invalid email or password"}, 401
 
         # Store the user id in session
-        session["user_id"] = user.id
-        print(f"User logged in with ID: {session.get('user_id')}")
+        session['user_id'] = user.id
+        print(f"User {user.id} logged in, session['user_id']: {session.get('user_id')}")
         return {"message": "Login successful"}, 200
 
 
@@ -265,14 +279,24 @@ class ProtectedResource(Resource):
             return {"error": "Unauthorized"}, 401
 
         user = User.query.get(user_id)
-        return {"message": f"Welcome, {user.username}"}, 200
+        if user:
+            print(f"User {user_id} is accessing protected route.")
+            return {"message": f"Welcome {user.name}"}, 200
+        else:
+            print(f"Session contains invalid user_id: {user_id}")
+            return {"error": "Invalid session"}, 401
 
 
 # Logout Resource
 class LogoutResource(Resource):
     def post(self):
-        session.pop("user_id", None)
-        return {"message": "Logged out successfully!"}, 200
+        user_id = session.pop("user_id", None)
+        if user_id:
+            print(f"User {user_id} logged out. Session cleared.")
+            return {"message": "Logged out successfully!"}, 200
+        else:
+            print("Logout attempted but no active session.")
+            return {"error": "No active session"}, 400
 
 
 # Define RESTful resources and routes
