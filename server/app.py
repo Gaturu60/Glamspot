@@ -3,10 +3,13 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request
+from flask import request, jsonify
+from flask_cors import CORS
 from flask_restful import Resource  # type: ignore
 from datetime import datetime
 from flask_login import login_user
+from flask_login import LoginManager
+import os
 
 # Local imports
 from config import app, db, api
@@ -17,8 +20,32 @@ from models import (
     Booking,
 )  # Ensure Booking replaces Appointment
 
+# app = Flask(__name__)
+
+# Enable CORS for all routes, including preflight (OPTIONS) requests
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+
+# Set the secret key to a random string
+app.secret_key = os.urandom(28)
+
+# Initialize LoginManager
+login_manager= LoginManager(app)
+
+# This callback is used to reload the user from the session
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))  # Load user by ID
+
 # Flask-RESTful Resources
 class LoginResource(Resource):
+    
+    def options(self):
+        # This is the preflight response for the OPTIONS request
+        response = jsonify({})
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
+        response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+        return response, 200
     def post(self):
         data=request.get_json()
         email=data.get('email')
@@ -147,6 +174,7 @@ class BookingResource(Resource):
 
 
 # Define RESTful resources and routes
+api.add_resource(LoginResource, '/login')
 api.add_resource(UserResource, '/users', '/users/<int:id>')
 api.add_resource(StylistResource, '/stylists', '/stylists/<int:id>')
 api.add_resource(ServiceResource, '/services', '/services/<int:id>')  
