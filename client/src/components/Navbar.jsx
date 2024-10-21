@@ -19,11 +19,11 @@ function Navbar() {
             Stylists
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link to="/bookings" className="text-white font-bold hover:underline">
             Bookings
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link to="/signup" className="text-white font-bold hover:underline">
             Sign Up
