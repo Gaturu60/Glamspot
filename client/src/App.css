@@ -1,0 +1,134 @@
+/* Variables for theme colors */
+:root {
+  --primary-color: #8e44ad; /* Rich purple */
+  --secondary-color: #e67e22; /* Warm orange */
+  --accent-color: #f39c12; /* Bright gold */
+  --background-color: #fdfdfd; /* Soft white */
+  --card-background: #ffffff; /* Card background */
+  --text-color: #333; /* Dark gray for text */
+  --border-color: #ddd; /* Light border color */
+}
+
+/* Global styles */
+body {
+  font-family: "Poppins", sans-serif; /* Modern font */
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar styling */
+.navbar {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--accent-color)
+  );
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.nav-list {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-around;
+}
+
+.nav-list li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.nav-list li a:hover {
+  color: var(--accent-color);
+  transform: scale(1.05);
+}
+
+/* Form container */
+.booking-container,
+.login-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--card-background);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+h1,
+h2 {
+  text-align: center;
+  color: var(--primary-color);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px rgba(142, 68, 173, 0.5);
+}
+
+/* Submit button */
+button[type="submit"] {
+  width: auto;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button[type="submit"]:hover {
+  background-color: #d35400; /* Darker orange */
+  transform: translateY(-2px);
+}
+
+/* Bookings list styling */
+.bookings-list {
+  margin-top: 2rem;
+}
+
+.bookings-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.bookings-list li {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s;
+}
+
+.bookings-list li:hover {
+  background-color: var(--accent-color); /* Highlight on hover */
+  color: white;
+}

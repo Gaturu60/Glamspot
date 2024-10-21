@@ -40,5 +40,5 @@ CORS(app)  # Enable CORS for all routes
 def index():
     return '<h1>Welcome to the Glamspot API</h1>'
 
-if __name__ == '__main__':
-    app.run(port=5555, debug=True)  # Run the app
+# if __name__ == '__main__':
+#     app.run(port=5555, debug=True)  # Run the app
