@@ -47,7 +47,7 @@ function SignUpPage() {
   };
 
   return (
-    <div className="container p-6">
+    <div className="container p-6 bg-gradient-to-b from-purple-50 to-white">
       <h1 className="text-3xl font-bold text-center text-primary mb-6">
         Sign Up
       </h1>

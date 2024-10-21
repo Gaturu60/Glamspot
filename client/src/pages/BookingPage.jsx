@@ -25,15 +25,14 @@ function BookingPage({ userId }) {
       date: "",
     },
     onSubmit: (values) => {
-      // Create booking using the logged-in user's ID
       fetch("http://127.0.0.1:5000/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user_id: userId, // Use the logged-in user's ID
+          user_id: userId,
           service_id: values.service,
           stylist_id: values.stylist,
-          date_time: `${values.date}T00:00:00`, // Ensure the correct datetime format
+          date_time: `${values.date}T00:00:00`,
         }),
       })
         .then(() => alert("Booking successfully created!"))
@@ -42,11 +41,11 @@ function BookingPage({ userId }) {
   });
 
   return (
-    <div className="container p-6">
+    <div className="container p-6 bg-gradient-to-b from-purple-50 to-white">
       <h1 className="text-3xl font-bold text-center text-primary mb-6">
         Book an Appointment
       </h1>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit} className="bg-white shadow-md rounded p-6">
         {/* Booking Information */}
         <div className="mb-4">
           <label
@@ -116,7 +115,7 @@ function BookingPage({ userId }) {
 
         <button
           type="submit"
-          className="w-auto px-4 py-2 bg-primary text-white text-base font-bold rounded-md hover:bg-secondary transition duration-200"
+          className="w-full px-4 py-2 bg-purple-600 text-white font-bold rounded-md hover:bg-purple-500 transition duration-200"
         >
           Book Appointment
         </button>
