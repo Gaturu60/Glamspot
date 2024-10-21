@@ -41,8 +41,8 @@ class User(db.Model, SerializerMixin):
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)
     
-    def is_admin(self):
-        return self.role == 'admin'
+    # def is_admin(self):
+    #     return self.role == 'admin'
 
     # One-to-Many Relationship: A user can have many bookings
     bookings = db.relationship('Booking', back_populates='user')

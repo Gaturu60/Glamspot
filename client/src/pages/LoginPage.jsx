@@ -27,11 +27,13 @@ function LoginPage() {
           } else {
             login(); // Update auth state on successful login
 
-            if (data.role === "admin") {
-              navigate("/admin"); // Redirect to admin page if admin
-            } else {
-              navigate("/bookings"); // Redirect to bookings page
-            }
+            navigate("/bookings");
+
+            // if (data.role === "admin") {
+            //   navigate("/admin"); // Redirect to admin page if admin
+            // } else {
+            //   navigate("/bookings"); // Redirect to bookings page
+            // }
           }
         })
         .catch((error) => {

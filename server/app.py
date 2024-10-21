@@ -7,7 +7,6 @@ from flask import request, jsonify, session
 from flask_cors import CORS
 from flask_restful import Resource  # type: ignore
 from datetime import datetime
-from flask_login import login_user, LoginManager, login_required, current_user
 import os
 
 # Local imports
@@ -22,7 +21,7 @@ from models import (
 # # app = Flask(__name__)
 
 # # Enable CORS for all routes, including preflight (OPTIONS) requests
-# CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 # Set the secret key to a random string
 app.secret_key = os.urandom(28)
@@ -109,7 +108,10 @@ class UserResource(Resource):
     def post(self):
         try:
             data = request.get_json()
-            new_user = User(name=data['name'], email=data['email'])
+            
+            new_user = User(name=data['name'], email=data['email'], role='user')
+            new_user.set_password(data['password']) #Hash the password
+            
             db.session.add(new_user)
             db.session.commit()
             return new_user.to_dict(), 201
@@ -189,6 +191,12 @@ class BookingResource(Resource):
     def post(self):
         try:
             data = request.get_json()
+
+             # Fetch the user_id from the session
+            user_id = session.get("user_id")
+            if not user_id:
+                return {"error": "User not logged in"}, 401
+            
             print("Incoming data:", data)
 
             # Convert date_time from string to a Python datetime object
@@ -240,11 +248,13 @@ class LoginResource(Resource):
         password = data.get("password")
 
         user = User.query.filter_by(email=email).first()
+        
         if not user or not user.check_password(password):
             return {"error": "Invalid email or password"}, 401
 
         # Store the user id in session
         session["user_id"] = user.id
+        print(f"User logged in with ID: {session.get('user_id')}")
         return {"message": "Login successful"}, 200
 
 
@@ -268,9 +278,9 @@ class LogoutResource(Resource):
 # Define RESTful resources and routes
 # api.add_resource(LoginResource, '/login')
 api.add_resource(UserResource, '/users', '/users/<int:id>')
-api.add_resource(StylistResource, '/stylists', '/stylists/<int:id>')
-api.add_resource(ServiceResource, '/services', '/services/<int:id>')  
-api.add_resource(BookingResource, '/bookings', '/bookings/<int:id>')
+api.add_resource(StylistResource, '/stylists')
+api.add_resource(ServiceResource, '/services')  
+api.add_resource(BookingResource, '/bookings')
 api.add_resource(SignupResource, "/signup")
 api.add_resource(LoginResource, "/login")
 api.add_resource(ProtectedResource, "/protected")
