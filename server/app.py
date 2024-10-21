@@ -271,6 +271,7 @@ class ProtectedResource(Resource):
     def get(self):
         user_id = session.get("user_id")
         if not user_id:
+            print("No active session")
             return {"error": "Unauthorized"}, 401
 
         user = User.query.get(user_id)
