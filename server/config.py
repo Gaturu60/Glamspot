@@ -7,6 +7,7 @@ from flask_migrate import Migrate  # For handling database migrations
 from flask_restful import Api  # For building RESTful APIs
 from flask_sqlalchemy import SQLAlchemy  # For ORM
 from sqlalchemy import MetaData  # For metadata configuration
+from flask_bcrypt import Bcrypt  # For password hashing
 
 # Local imports
 # (Add your local imports here, e.g., models)
@@ -25,6 +26,7 @@ metadata = MetaData(naming_convention={
 # Instantiate the database
 db = SQLAlchemy(metadata=metadata)  # Pass the metadata to SQLAlchemy
 migrate = Migrate(app, db)  # Initialize Flask-Migrate with app and db
+bcrypt = Bcrypt(app)
 
 # Initialize the database with the app
 db.init_app(app)
@@ -33,7 +35,7 @@ db.init_app(app)
 api = Api(app)
 
 # Instantiate CORS
-CORS(app)  # Enable CORS for all routes
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})  # Enable CORS for all routes
 
 # Add your routes and API resource endpoints here
 @app.route('/')

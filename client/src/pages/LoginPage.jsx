@@ -28,9 +28,9 @@ function LoginPage() {
             login();
 
             if (data.role === "admin") {
-              navigate("/admin");
+              navigate("/admin"); // Redirect to admin page if admin
             } else {
-              navigate("/bookings");
+              navigate("/bookings"); // Redirect to bookings page
             }
           }
         })

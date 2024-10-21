@@ -1,9 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Add navigation hook
 import { useFormik } from "formik";
 
-function BookingPage({ userId }) {
+function BookingPage() {
   const [services, setServices] = useState([]);
   const [stylists, setStylists] = useState([]);
+  const navigate = useNavigate(); // Use this to redirect if the user is not authenticated
+
+  // Check if user is authenticated
+  useEffect(() => {
+    fetch("http://127.0.0.1:5000/protected", {
+      method: "GET",
+      credentials: "include", // Make sure session cookies are sent
+    })
+      .then((response) => {
+        if (!response.ok) {
+          // If not authenticated, redirect to login
+          navigate("/login");
+        }
+      })
+      .catch((error) => console.error("Error checking authentication:", error));
+  }, [navigate]); // Only runs once when component mounts
 
   // Fetch services and stylists from the backend
   useEffect(() => {
@@ -18,6 +35,7 @@ function BookingPage({ userId }) {
       .catch((error) => console.error("Error fetching stylists:", error));
   }, []);
 
+  // Formik setup for handling the booking form
   const formik = useFormik({
     initialValues: {
       service: "",
@@ -25,18 +43,32 @@ function BookingPage({ userId }) {
       date: "",
     },
     onSubmit: (values) => {
+      // Create booking using the logged-in user's ID
       fetch("http://127.0.0.1:5000/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", // Important for sending session cookies
         body: JSON.stringify({
-          user_id: userId,
+          user_id: userId, // Use the logged-in user's ID
           service_id: values.service,
           stylist_id: values.stylist,
-          date_time: `${values.date}T00:00:00`,
+          date_time: `${values.date}T00:00:00`, // Ensure the correct datetime format
         }),
       })
-        .then(() => alert("Booking successfully created!"))
-        .catch((error) => console.error("Error creating booking:", error));
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Unauthorized. Please log in again.");
+          }
+          return response.json();
+        })
+        .then(() => {
+          alert("Booking successfully created!");
+          navigate("/bookings"); // Redirect to bookings page after success
+        })
+        .catch((error) => {
+          console.error("Error creating booking:", error);
+          alert("Error creating booking. Please try again.");
+        });
     },
   });
 
@@ -45,7 +77,7 @@ function BookingPage({ userId }) {
       <h1 className="text-3xl font-bold text-center text-primary mb-6">
         Book an Appointment
       </h1>
-      <form onSubmit={formik.handleSubmit} className="bg-white shadow-md rounded p-6">
+      <form onSubmit={formik.handleSubmit}>
         {/* Booking Information */}
         <div className="mb-4">
           <label
