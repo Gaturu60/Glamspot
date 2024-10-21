@@ -1,12 +1,13 @@
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import HomePage from "./pages/HomePage";
+import ContactsPage from "./pages/ContactsPage";
 import BookingPage from "./pages/BookingPage";
 import ServicesPage from "./pages/ServicesPage";
 import StylistsPage from "./pages/StylistsPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
+import LandingPage from "./pages/LandingPage";
 import { AuthContext, AuthProvider } from "./contexts/AuthContext";
 import backgroundImage from "./assets/background/pexels-david-geib-1265112-3268732.jpg";
 
@@ -21,11 +22,12 @@ function App() {
         <Navbar />
         <div className="bg-white bg-opacity-90 min-h-screen">
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<LandingPage />} />
             <Route path="/services" element={<ServicesPage />} />
             <Route path="/stylists" element={<StylistsPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/contacts" element={<ContactsPage />} />
 
             {/* Protect Bookings Page */}
             <Route

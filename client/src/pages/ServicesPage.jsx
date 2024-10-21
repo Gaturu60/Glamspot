@@ -29,7 +29,7 @@ function ServicesPage() {
             className="list-item p-4 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105"
           >
             <h2 className="font-semibold text-lg">{service.name}</h2>
-            <p className="text-gray-600">${service.price}</p>
+            <p className="text-gray-600">Ksh.{service.price}</p>
           </li>
         ))}
       </ul>
