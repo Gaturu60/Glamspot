@@ -35,7 +35,7 @@ db.init_app(app)
 api = Api(app)
 
 # Instantiate CORS
-CORS(app, supports_credentials=True)  # Enable CORS for all routes
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})  # Enable CORS for all routes
 
 # Add your routes and API resource endpoints here
 @app.route('/')

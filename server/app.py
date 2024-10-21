@@ -17,6 +17,8 @@ from models import (
     Service,
     Booking,
 )  # Ensure Booking replaces Appointment
+app.config['SESSION_COOKIE_SAMESITE']= 'None'
+app.config['SESSION_COOKIE_SECURE']=True
 
 # # app = Flask(__name__)
 
@@ -196,35 +198,28 @@ class BookingResource(Resource):
         except Exception as e:            
             return {'error': str(e)}, 500
 
-    def post(self):
-        try:
-            data = request.get_json()
-
-             # Fetch the user_id from the session
-            user_id = session.get("user_id")
-            if not user_id:
-                return {"error": "User not logged in"}, 401
-            
-            print("Incoming data:", data)
-
-            # Convert date_time from string to a Python datetime object
-            date_time_obj = datetime.strptime(data['date_time'], '%Y-%m-%dT%H:%M:%S')
+    def post(self):         
+        user_id = session.get("user_id")
+        if not user_id:
+            return {"error": "User not logged in"}, 401
+        
+        data = request.get_json()            
+                    # Convert date_time from string to a Python datetime object
+        date_time_obj = datetime.strptime(data['date_time'], '%Y-%m-%dT%H:%M:%S')
 
             # Create new booking with the converted date_time
-            new_booking = Booking(
-                user_id=data['user_id'],
-                stylist_id=data['stylist_id'],
-                service_id=data['service_id'],
-                date_time=date_time_obj  # Use the converted datetime object
+        new_booking = Booking(
+            user_id=data['user_id'],
+            stylist_id=data['stylist_id'],
+            service_id=data['service_id'],
+            date_time=date_time_obj  # Use the converted datetime object
             )
-            db.session.add(new_booking)
-            db.session.commit()
+        db.session.add(new_booking)
+        db.session.commit()
 
-            return new_booking.to_dict(), 201
+        return new_booking.to_dict(), 201
         
-        except Exception as e:
-            print(f"Error: {str(e)}")  # Print the error message for debugging
-            return {"error": str(e)}, 500
+        
         
 # Authentication and Authorization Resources
 
@@ -290,13 +285,8 @@ class ProtectedResource(Resource):
 # Logout Resource
 class LogoutResource(Resource):
     def post(self):
-        user_id = session.pop("user_id", None)
-        if user_id:
-            print(f"User {user_id} logged out. Session cleared.")
-            return {"message": "Logged out successfully!"}, 200
-        else:
-            print("Logout attempted but no active session.")
-            return {"error": "No active session"}, 400
+        session.pop("user_id", None)
+        return {"message": "Logged out successfully!"}, 200
 
 
 # Define RESTful resources and routes
