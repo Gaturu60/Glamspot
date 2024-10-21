@@ -17,6 +17,7 @@ function LoginPage() {
       fetch("http://127.0.0.1:5000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include", //include session credentials
         body: JSON.stringify(values),
       })
         .then((response) => response.json())
@@ -25,7 +26,12 @@ function LoginPage() {
             formik.setStatus(data.error); // Set error message if login fails
           } else {
             login(); // Update auth state on successful login
-            navigate("/bookings"); // Redirect to bookings page
+
+            if (data.role === "admin") {
+              navigate("/admin"); // Redirect to admin page if admin
+            } else {
+              navigate("/bookings"); // Redirect to bookings page
+            }
           }
         })
         .catch((error) => {
