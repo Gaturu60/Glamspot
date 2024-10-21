@@ -1,24 +1,37 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 import { useFormik } from "formik";
 
 function LoginPage() {
+  const { login } = useContext(AuthContext); //Get Login function from AuthContext
+  const navigate = useNavigate();
+
+  //Formik setup
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
     onSubmit: (values) => {
-      fetch("/api/login", {
+      fetch("http://127.0.0.1:5000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       })
         .then((response) => response.json())
-        .then((userData) => {
-          // Handle successful login, e.g., redirect or set user context
-          console.log("Login successful:", userData);
+        .then((data) => {
+          if (data.error) {
+            formik.setStatus(data.error); // Set error message if login fails
+          } else {
+            login(); // Update auth state on successful login
+            navigate("/bookings"); // Redirect to bookings page
+          }
         })
-        .catch((error) => console.error("Error logging in:", error));
+        .catch((error) => {
+          formik.setStatus("An error occurred. Please try again.");
+          console.error("Error:", error);
+        });
     },
   });
 
