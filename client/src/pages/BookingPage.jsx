@@ -20,48 +20,24 @@ function BookingPage() {
 
   const formik = useFormik({
     initialValues: {
-      name: "",
-      email: "",
-      password: "",
       service: "",
       stylist: "",
       date: "",
     },
     onSubmit: (values) => {
-      // First create the user
-      fetch("http://127.0.0.1:5000/users", {
+      // Create booking using the logged-in user's ID
+      fetch("http://127.0.0.1:5000/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: values.name,
-          email: values.email,
-          password: values.password,
+          user_id: userId, // Use the logged-in user's ID
+          service_id: values.service,
+          stylist_id: values.stylist,
+          date_time: `${values.date}T00:00:00`, // Ensure the correct datetime format
         }),
       })
-        .then((response) => response.json())
-        .then((userData) => {
-          console.log("User created:", userData);
-          if (userData && userData.id) {
-            // After creating the user, create the booking with the user_id
-            fetch("http://127.0.0.1:5000/bookings", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                user_id: userData.id, // Add user_id from created user
-                service_id: values.service, // Ensure valid service ID
-                stylist_id: values.stylist, // Ensure valid stylist ID
-                date_time: `${values.date}T00:00:00`, // Ensure valid datetime format
-              }),
-            })
-              .then(() => alert("Booking successfully created!"))
-              .catch((error) =>
-                console.error("Error creating booking:", error)
-              );
-          } else {
-            console.error("Error: User ID is missing");
-          }
-        })
-        .catch((error) => console.error("Error creating user:", error));
+        .then(() => alert("Booking successfully created!"))
+        .catch((error) => console.error("Error creating booking:", error));
     },
   });
 
@@ -71,59 +47,6 @@ function BookingPage() {
         Book an Appointment
       </h1>
       <form onSubmit={formik.handleSubmit}>
-        {/* User Information */}
-        <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Name
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            onChange={formik.handleChange}
-            value={formik.values.name}
-            required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            onChange={formik.handleChange}
-            value={formik.values.email}
-            required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Password
-          </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            onChange={formik.handleChange}
-            value={formik.values.password}
-            required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
-          />
-        </div>
-
         {/* Booking Information */}
         <div className="mb-4">
           <label

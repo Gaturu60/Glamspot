@@ -6,6 +6,7 @@ import BookingPage from "./pages/BookingPage";
 import ServicesPage from "./pages/ServicesPage";
 import StylistsPage from "./pages/StylistsPage";
 import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
 import backgroundImage from "./assets/background/pexels-david-geib-1265112-3268732.jpg";
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
             <Route path="/stylists" element={<StylistsPage />} />
             <Route path="/bookings" element={<BookingPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
           </Routes>
         </div>
       </Router>
