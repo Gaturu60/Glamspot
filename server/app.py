@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request, jsonify
+from flask import request, jsonify, session
 from flask_cors import CORS
 from flask_restful import Resource  # type: ignore
 from datetime import datetime
@@ -19,83 +19,83 @@ from models import (
     Booking,
 )  # Ensure Booking replaces Appointment
 
-# app = Flask(__name__)
+# # app = Flask(__name__)
 
-# Enable CORS for all routes, including preflight (OPTIONS) requests
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+# # Enable CORS for all routes, including preflight (OPTIONS) requests
+# CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 # Set the secret key to a random string
 app.secret_key = os.urandom(28)
 
-# Initialize LoginManager
-login_manager= LoginManager(app)
+# # Initialize LoginManager
+# login_manager= LoginManager(app)
 
-# This callback is used to reload the user from the session
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))  # Load user by ID
+# # This callback is used to reload the user from the session
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User.query.get(int(user_id))  # Load user by ID
 
 # Flask-RESTful Resources
-class AdminUserResource(Resource):
-    # Restrict access to admins only
-    @login_required
-    def get(self):
-        if not current_user.is_admin():
-            return {"error": "Unauthorized"}, 403
+# class AdminUserResource(Resource):
+#     # Restrict access to admins only
+#     @login_required
+#     def get(self):
+#         if not current_user.is_admin():
+#             return {"error": "Unauthorized"}, 403
 
-        users = User.query.all()
-        return jsonify([user.to_dict() for user in users])
+#         users = User.query.all()
+#         return jsonify([user.to_dict() for user in users])
 
-    @login_required
-    def delete(self, user_id):
-        if not current_user.is_admin():
-            return {"error": "Unauthorized"}, 403
+#     @login_required
+#     def delete(self, user_id):
+#         if not current_user.is_admin():
+#             return {"error": "Unauthorized"}, 403
 
-        user = User.query.get(user_id)
-        if user:
-            db.session.delete(user)
-            db.session.commit()
-            return {"message": "User deleted"}, 200
-        return {"error": "User not found"}, 404
+#         user = User.query.get(user_id)
+#         if user:
+#             db.session.delete(user)
+#             db.session.commit()
+#             return {"message": "User deleted"}, 200
+#         return {"error": "User not found"}, 404
 
-    @login_required
-    def patch(self, user_id):
-        if not current_user.is_admin():
-            return {"error": "Unauthorized"}, 403
+#     @login_required
+#     def patch(self, user_id):
+#         if not current_user.is_admin():
+#             return {"error": "Unauthorized"}, 403
 
-        user = User.query.get(user_id)
-        if not user:
-            return {"error": "User not found"}, 404
+#         user = User.query.get(user_id)
+#         if not user:
+#             return {"error": "User not found"}, 404
 
-        data = request.get_json()
-        if 'name' in data:
-            user.name = data['name']
-        if 'email' in data:
-            user.email = data['email']
+#         data = request.get_json()
+#         if 'name' in data:
+#             user.name = data['name']
+#         if 'email' in data:
+#             user.email = data['email']
 
-        db.session.commit()
-        return jsonify(user.to_dict()), 200
-class LoginResource(Resource):
+#         db.session.commit()
+#         return jsonify(user.to_dict()), 200
+# class LoginResource(Resource):
     
-    def options(self):
-        # This is the preflight response for the OPTIONS request
-        response = jsonify({})
-        response.headers.add("Access-Control-Allow-Origin", "*")
-        response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
-        response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
-        return response, 200
-    def post(self):
-        data=request.get_json()
-        email=data.get('email')
-        password=data.get('password')
+#     def options(self):
+#         # This is the preflight response for the OPTIONS request
+#         response = jsonify({})
+#         response.headers.add("Access-Control-Allow-Origin", "*")
+#         response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
+#         response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+#         return response, 200
+#     def post(self):
+#         data=request.get_json()
+#         email=data.get('email')
+#         password=data.get('password')
 
-        user = User.query.filter_by(email=email).first()
-        if user is None or not user.check_password(password):
-            return {'error': 'Invalid credentials'}, 401
+#         user = User.query.filter_by(email=email).first()
+#         if user is None or not user.check_password(password):
+#             return {'error': 'Invalid credentials'}, 401
         
-        login_user(user)
+#         login_user(user)
 
-        return {'message': 'Login successful', "user": user.to_dict()}, 200
+#         return {'message': 'Login successful', "user": user.to_dict()}, 200
 
 
 class UserResource(Resource):
@@ -209,14 +209,72 @@ class BookingResource(Resource):
         except Exception as e:
             print(f"Error: {str(e)}")  # Print the error message for debugging
             return {"error": str(e)}, 500
+        
+# Authentication and Authorization Resources
+
+
+class SignupResource(Resource):
+    def post(self):
+        data = request.get_json()
+        username = data.get("username")
+        email = data.get("email")
+        password = data.get("password")
+
+        # Check if the email already exists
+        if User.query.filter_by(email=email).first():
+            return {"error": "Email already exists"}, 400
+
+        # Create new user and hash the password
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return {"message": "User registered successfully!"}, 201
+
+
+class LoginResource(Resource):
+    def post(self):
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
+
+        user = User.query.filter_by(email=email).first()
+        if not user or not user.check_password(password):
+            return {"error": "Invalid email or password"}, 401
+
+        # Store the user id in session
+        session["user_id"] = user.id
+        return {"message": "Login successful"}, 200
+
+
+class ProtectedResource(Resource):
+    def get(self):
+        user_id = session.get("user_id")
+        if not user_id:
+            return {"error": "Unauthorized"}, 401
+
+        user = User.query.get(user_id)
+        return {"message": f"Welcome, {user.username}"}, 200
+
+
+# Logout Resource
+class LogoutResource(Resource):
+    def post(self):
+        session.pop("user_id", None)
+        return {"message": "Logged out successfully!"}, 200
 
 
 # Define RESTful resources and routes
-api.add_resource(LoginResource, '/login')
+# api.add_resource(LoginResource, '/login')
 api.add_resource(UserResource, '/users', '/users/<int:id>')
 api.add_resource(StylistResource, '/stylists', '/stylists/<int:id>')
 api.add_resource(ServiceResource, '/services', '/services/<int:id>')  
 api.add_resource(BookingResource, '/bookings', '/bookings/<int:id>')
+api.add_resource(SignupResource, "/signup")
+api.add_resource(LoginResource, "/login")
+api.add_resource(ProtectedResource, "/protected")
+api.add_resource(LogoutResource, "/logout")
 
 # Index route (renamed)
 @app.route("/")
