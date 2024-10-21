@@ -38,30 +38,30 @@ class UserResource(Resource):
             return {'error': str(e)}, 500
 
 
-def patch(self, id):
-    user = User.query.get(id)
-    if not user:
-        return {"error": "User not found"}, 404
+    def patch(self, id):
+        user = User.query.get(id)
+        if not user:
+            return {"error": "User not found"}, 404
 
-    data = request.get_json()
+        data = request.get_json()
 
-    if "name" in data:
-        user.name = data["name"]
-    if "email" in data:
-        user.email = data["email"]
+        if "name" in data:
+            user.name = data["name"]
+        if "email" in data:
+            user.email = data["email"]
 
-    db.session.commit()
-    return {"message": "User updated successfully!", "user": user.to_dict()}, 200
+        db.session.commit()
+        return {"message": "User updated successfully!", "user": user.to_dict()}, 200
 
 
-def delete(self, id):
-    user = User.query.get(id)
-    if not user:
-        return {"error": "User not found"}, 404
+    def delete(self, id):
+        user = User.query.get(id)
+        if not user:
+            return {"error": "User not found"}, 404
 
-    db.session.delete(user)
-    db.session.commit()
-    return {"message": "User deleted successfully!"}, 200
+        db.session.delete(user)
+        db.session.commit()
+        return {"message": "User deleted successfully!"}, 200
 
 
 class StylistResource(Resource):
