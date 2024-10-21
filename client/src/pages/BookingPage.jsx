@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 
-function BookingPage() {
+function BookingPage({ userId }) {
   const [services, setServices] = useState([]);
   const [stylists, setStylists] = useState([]);
 
