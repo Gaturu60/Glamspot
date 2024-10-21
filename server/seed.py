@@ -20,12 +20,30 @@ if __name__ == '__main__':
         db.drop_all()
         db.create_all()
 
-        # Seed users
+         # Seed regular users
         users = []
-        for _ in range(10):
-            user = User(name=fake.name(), email=fake.unique.email())  # Fixed missing commas
+        for _ in range(7):  # Create 7 regular users
+            user = User(
+                name=fake.name(),
+                email=fake.unique.email(),
+                role="user"  # Regular user
+            )
+            user.set_password("password123")  # Default password
             users.append(user)
-        db.session.bulk_save_objects(users)
+
+        # Seed admin users
+        admins = []
+        for i in range(3):  # Create 3 admin users
+            admin = User(
+                name=f"Admin{i+1}",
+                email=f"admin{i+1}@example.com",
+                role="admin"  # Admin user
+            )
+            admin.set_password("adminpassword")  # Default admin password
+            admins.append(admin)
+
+        db.session.bulk_save_objects(users + admins)
+
 
         # Seed stylists
         stylists = []
