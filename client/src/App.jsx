@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import AdminPage from "./pages/AdminPage";
 import ContactsPage from "./pages/ContactsPage";
 import BookingPage from "./pages/BookingPage";
 import ServicesPage from "./pages/ServicesPage";
@@ -35,6 +36,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <BookingPage />
+                </ProtectedRoute>
+              }
+            />
+            {/* Protect Admin Page (only accessible to admins) */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminPage />
                 </ProtectedRoute>
               }
             />

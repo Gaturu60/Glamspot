@@ -25,15 +25,13 @@ function LoginPage() {
           if (data.error) {
             formik.setStatus(data.error); // Set error message if login fails
           } else {
-            login(); // Update auth state on successful login
-
-            navigate("/bookings");
-
-            // if (data.role === "admin") {
-            //   navigate("/admin"); // Redirect to admin page if admin
-            // } else {
-            //   navigate("/bookings"); // Redirect to bookings page
-            // }
+            login(data.role); // Update auth state on successful login
+            // Redirect based on role
+            if (data.role === "admin") {
+              navigate("/admin"); // Redirect to admin page if admin
+            } else {
+              navigate("/bookings"); // Redirect to bookings page
+            }
           }
         })
         .catch((error) => {

@@ -130,26 +130,37 @@ class BookingResource(Resource):
         except Exception as e:            
             return {'error': str(e)}, 500
 
-    def post(self):         
-        user_id = session.get("user_id")
+    def post(self):
+        user_id = session.get("user_id")  # Retrieve user_id from session
         if not user_id:
             return {"error": "User not logged in"}, 401
-        
-        data = request.get_json()            
-                    # Convert date_time from string to a Python datetime object
-        date_time_obj = datetime.strptime(data['date_time'], '%Y-%m-%dT%H:%M:%S')
 
-            # Create new booking with the converted date_time
-        new_booking = Booking(
-            user_id=data['user_id'],
-            stylist_id=data['stylist_id'],
-            service_id=data['service_id'],
-            date_time=date_time_obj  # Use the converted datetime object
+        data = request.get_json()
+
+        try:
+            # Extract other fields from the request data
+            stylist_id = data['stylist_id']
+            service_id = data['service_id']
+            date_time_obj = datetime.strptime(data['date_time'], '%Y-%m-%dT%H:%M:%S')
+
+            # Create the booking with the session user_id
+            new_booking = Booking(
+                user_id=user_id,  # Use user_id from session
+                stylist_id=stylist_id,
+                service_id=service_id,
+                date_time=date_time_obj,
             )
-        db.session.add(new_booking)
-        db.session.commit()
 
-        return new_booking.to_dict(), 201
+            db.session.add(new_booking)
+            db.session.commit()
+
+            return new_booking.to_dict(), 201
+
+        except KeyError as e:
+            return {"error": f"Missing key: {str(e)}"}, 400
+
+        except Exception as e:
+            return {"error": str(e)}, 500
         
         
         
@@ -188,14 +199,13 @@ class LoginResource(Resource):
             return {"error": "Invalid email or password"}, 401
         
         #Check if user exists and if password is correct
-        if not user or not user.check_password(password):
+        if user and user.check_password(password):
+            session['user_id'] = user.id
+            return {"message": "Login successful", "role": user.role}, 200
+        else:
             return {"error": "Invalid email or password"}, 401
 
-        # Store the user id in session
-        session['user_id'] = user.id
-        print(f"User {user.id} logged in, session['user_id']: {session.get('user_id')}")
-        return {"message": "Login successful"}, 200
-
+    
 # Protected Resource
 class ProtectedResource(Resource):
     def get(self):
