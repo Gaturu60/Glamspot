@@ -110,27 +110,6 @@ function LandingPage() {
           Contact us
         </Link>
       </section>
-
-      {/* Newsletter Signup
-      <section className="newsletter p-6">
-        <h2 className="text-4xl font-bold text-center mb-6 text-gray-800">
-          Stay Updated!
-        </h2>
-        <form className="flex justify-center">
-          <input
-            type="email"
-            placeholder="Your email"
-            className="border p-2 rounded-l"
-            required
-          />
-          <button
-            type="submit"
-            className="bg-purple-600 text-white p-2 rounded-r"
-          >
-            Sign Up
-          </button>
-        </form>
-      </section> */}
     </div>
   );
 }
