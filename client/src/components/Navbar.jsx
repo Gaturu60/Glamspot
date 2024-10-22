@@ -1,9 +1,15 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
 function Navbar() {
   const { isAuthenticated, userRole, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   return (
     <nav className="bg-purple-600 p-4 shadow-md">
       <ul className="flex justify-around">
@@ -55,7 +61,7 @@ function Navbar() {
           </li>
         ) : (
           <li>
-            <button onClick={logout} className="text-white font-bold">
+            <button onClick={handleLogout} className="text-white font-bold">
               Logout
             </button>
           </li>
