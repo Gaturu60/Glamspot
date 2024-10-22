@@ -21,18 +21,6 @@ class User(db.Model, SerializerMixin):
     password_hash = db.Column(db.String(200), nullable=False) #store hashed password
     role = db.Column(db.String(20), nullable=False, default= 'user')
 
-    # # Add the required methods for Flask-Login
-    # def is_active(self):
-    #     return True  # Can add logic for deactivated accounts
-
-    # def is_authenticated(self):
-    #     return True  # User is authenticated if they are logged in
-
-    # def is_anonymous(self):
-    #     return False  # Anonymous users are not logged in
-
-    # def get_id(self):
-    #     return str(self.id)  # Return the unique user ID as a string
 
     # Password handling methods
     def set_password(self, password):
@@ -41,8 +29,6 @@ class User(db.Model, SerializerMixin):
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password_hash, password)
     
-    # def is_admin(self):
-    #     return self.role == 'admin'
 
     # One-to-Many Relationship: A user can have many bookings
     bookings = db.relationship('Booking', back_populates='user')

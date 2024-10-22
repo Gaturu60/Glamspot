@@ -28,14 +28,7 @@ CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://local
 # Set the secret key to a random string
 app.secret_key = os.urandom(28)
 
-# # Initialize LoginManager
-# login_manager= LoginManager(app)
-
-# # This callback is used to reload the user from the session
-# @login_manager.user_loader
-# def load_user(user_id):
-#     return User.query.get(int(user_id))  # Load user by ID
-
+# Before request
 @app.before_request
 def log_session_activity():
     user_id = session.get('user_id')
@@ -44,69 +37,8 @@ def log_session_activity():
     else:
         print("No active session.")
 
-# Flask-RESTful Resources
-# class AdminUserResource(Resource):
-#     # Restrict access to admins only
-#     @login_required
-#     def get(self):
-#         if not current_user.is_admin():
-#             return {"error": "Unauthorized"}, 403
 
-#         users = User.query.all()
-#         return jsonify([user.to_dict() for user in users])
-
-#     @login_required
-#     def delete(self, user_id):
-#         if not current_user.is_admin():
-#             return {"error": "Unauthorized"}, 403
-
-#         user = User.query.get(user_id)
-#         if user:
-#             db.session.delete(user)
-#             db.session.commit()
-#             return {"message": "User deleted"}, 200
-#         return {"error": "User not found"}, 404
-
-#     @login_required
-#     def patch(self, user_id):
-#         if not current_user.is_admin():
-#             return {"error": "Unauthorized"}, 403
-
-#         user = User.query.get(user_id)
-#         if not user:
-#             return {"error": "User not found"}, 404
-
-#         data = request.get_json()
-#         if 'name' in data:
-#             user.name = data['name']
-#         if 'email' in data:
-#             user.email = data['email']
-
-#         db.session.commit()
-#         return jsonify(user.to_dict()), 200
-# class LoginResource(Resource):
-    
-#     def options(self):
-#         # This is the preflight response for the OPTIONS request
-#         response = jsonify({})
-#         response.headers.add("Access-Control-Allow-Origin", "*")
-#         response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS")
-#         response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
-#         return response, 200
-#     def post(self):
-#         data=request.get_json()
-#         email=data.get('email')
-#         password=data.get('password')
-
-#         user = User.query.filter_by(email=email).first()
-#         if user is None or not user.check_password(password):
-#             return {'error': 'Invalid credentials'}, 401
-        
-#         login_user(user)
-
-#         return {'message': 'Login successful', "user": user.to_dict()}, 200
-
-
+# User Resource
 class UserResource(Resource):
     def get(self):
         users = User.query.all()
@@ -154,7 +86,7 @@ class UserResource(Resource):
         db.session.commit()
         return {"message": "User deleted successfully!"}, 200
 
-
+# Stylist Resource
 class StylistResource(Resource):
     def get(self):
         stylists = Stylist.query.all()
@@ -171,7 +103,7 @@ class StylistResource(Resource):
         db.session.commit()
         return {"message": "Stylist created successfully!"}, 201
 
-
+# Service Resource
 class ServiceResource(Resource):
     def get(self):
         services = Service.query.all()
@@ -188,7 +120,7 @@ class ServiceResource(Resource):
         db.session.commit()
         return {"message": "Service created successfully!"}, 201
 
-
+# Booking Resource
 class BookingResource(Resource):
     def get(self):
         try:            
@@ -222,8 +154,6 @@ class BookingResource(Resource):
         
         
 # Authentication and Authorization Resources
-
-
 class SignupResource(Resource):
     def post(self):
         data = request.get_json()
@@ -243,7 +173,7 @@ class SignupResource(Resource):
 
         return {"message": "User registered successfully!"}, 201
 
-
+# Login Resource
 class LoginResource(Resource):
     def post(self):
         data = request.get_json()
@@ -266,7 +196,7 @@ class LoginResource(Resource):
         print(f"User {user.id} logged in, session['user_id']: {session.get('user_id')}")
         return {"message": "Login successful"}, 200
 
-
+# Protected Resource
 class ProtectedResource(Resource):
     def get(self):
         user_id = session.get("user_id")
