@@ -31,7 +31,7 @@ class User(db.Model, SerializerMixin):
     
 
     # One-to-Many Relationship: A user can have many bookings
-    bookings = db.relationship('Booking', back_populates='user')
+    bookings = db.relationship('Booking', back_populates='user', cascade='all, delete-orphan')
 
     def to_dict(self):
         return {

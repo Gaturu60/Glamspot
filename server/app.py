@@ -235,6 +235,32 @@ class AdminUserResource(Resource):
         user_list = [{"id": user.id, "name": user.name, "email": user.email, "role": user.role} for user in users]
         return user_list, 200  # Return list of users
     
+    def patch(self, id):
+        user = User.query.get(id)
+        if not user:
+            return {"error": "User not found"}, 404
+
+        data = request.get_json()
+        name = data.get('name')
+        email = data.get('email')
+        role = data.get('role')
+
+        # Update only if provided in the request
+        if name:
+            user.name = name
+        if email:
+            user.email = email
+
+        # Restrict role updates to admin users only
+        if role and role == "admin":
+            if session.get('user_role') == 'admin':  # Ensure only admins can assign admin role
+                user.role = role
+            else:
+                return {"error": "Only admins can assign the admin role"}, 403
+
+        db.session.commit()
+        return {"message": "User updated successfully", "user": user.to_dict()}, 200
+    
     def delete(self, id):
         user = User.query.get(id)
         if not user:

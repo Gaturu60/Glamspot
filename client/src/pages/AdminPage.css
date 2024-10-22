@@ -1,0 +1,72 @@
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.input-field {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s;
+}
+
+.input-field:focus {
+  border-color: var(--primary-color);
+}
+
+.submit-btn {
+  background-color: var(--secondary-color);
+  color: #26d741;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-color);
+}
+
+.cancel-btn {
+  background-color: #f44336;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-btn,
+.delete-btn {
+  margin-left: 10px;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-btn {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background-color: #388e3c;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}

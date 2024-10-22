@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
+import "./AdminPage.css";
 
 function AdminPage() {
   const [users, setUsers] = useState([]);
@@ -21,6 +22,7 @@ function AdminPage() {
     initialValues: {
       name: "",
       email: "",
+      role: "",
     },
     enableReinitialize: true, // Reinitialize when editing user changes
     onSubmit: (values) => {
@@ -77,6 +79,7 @@ function AdminPage() {
     formik.setValues({
       name: user.name,
       email: user.email,
+      role: user.role,
     });
   };
 
@@ -96,6 +99,7 @@ function AdminPage() {
                   value={formik.values.name}
                   placeholder="Name"
                   required
+                  className="input-field"
                 />
                 <input
                   name="email"
@@ -104,17 +108,41 @@ function AdminPage() {
                   value={formik.values.email}
                   placeholder="Email"
                   required
+                  className="input-field"
                 />
-                <button type="submit">Save</button>
-                <button type="button" onClick={() => setEditingUserId(null)}>
+                {/* Only admins can set role to admin */}
+                <select
+                  name="role"
+                  onChange={formik.handleChange}
+                  value={formik.values.role}
+                  className="input-field"
+                >
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+                <button type="submit" className="submit-btn">
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setEditingUserId(null)}
+                  className="cancel-btn"
+                >
                   Cancel
                 </button>
               </form>
             ) : (
               <>
                 {user.name} ({user.email}) - Role: {user.role}
-                <button onClick={() => startEditing(user)}>Edit</button>
-                <button onClick={() => deleteUser(user.id)}>Delete</button>
+                <button onClick={() => startEditing(user)} className="edit-btn">
+                  Edit
+                </button>
+                <button
+                  onClick={() => deleteUser(user.id)}
+                  className="delete-btn"
+                >
+                  Delete
+                </button>
               </>
             )}
           </li>
