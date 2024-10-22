@@ -46,6 +46,12 @@ function LoginPage() {
       <h1 className="text-3xl font-bold text-center text-primary mb-6">
         User Login
       </h1>
+      {/* Alert message for incorrect credentials */}
+      {formik.status && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-400 rounded-md">
+          {formik.status}
+        </div>
+      )}
       <form onSubmit={formik.handleSubmit}>
         <div className="mb-4">
           <label
