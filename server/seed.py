@@ -42,10 +42,29 @@ if __name__ == "__main__":
             service = Service(name=name, description=fake.text(max_nb_chars=50))
             services.append(service)
         db.session.bulk_save_objects(services)
+        
+    services_data = [
+        {
+            "name": "haircut",
+            "image_path":http://127.0.0.1:5000/server/static /images/DALL·E 2024-10-22 01.20.42 -
+        }, 
+        {
+            "name": "manicure",
+            "image_path":
+        },
+        {
+            "name": "pedicure",
+            "image_path": http://127.0.0.1:5000/static/images/server/static
+        },
+        {
+            "name": "facial",
+            "image_path":https://127.0.0.1:5000/static/images/media.istockphoto.com/id/486873186/photo/what-a-pleasure.jpg?s=2048x2048&w=is&k=20&c=-W48zV7wSwvNOXMWCxJjLJhqz2QGjd85QuY2HYyAP2M=
+        }
+    ]
 
         # Seed bookings (previously appointments)
-        bookings = []
-        for _ in range(20):
+    bookings = []
+    for _ in range(20):
             booking = Booking(  # Changed to Booking
                 user_id=randint(1, 10),
                 stylist_id=randint(1, 5),
@@ -53,9 +72,9 @@ if __name__ == "__main__":
                 date_time=fake.date_time_this_year(),
             )
             bookings.append(booking)
-        db.session.bulk_save_objects(bookings)
+    db.session.bulk_save_objects(bookings)
 
         # Commit all changes
-        db.session.commit()
+    db.session.commit()
 
-        print("Seeding completed.")
+    print("Seeding completed.")

@@ -73,6 +73,7 @@ class Service(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     description = db.Column(db.String(200))
+    image_path = db.Column(db.String(200))
 
     # One-to-Many Relationship: A service can be part of multiple bookings
     bookings = db.relationship("Booking", backref="service", lazy=True)
