@@ -52,16 +52,24 @@ function AdminPage() {
   const deleteUser = (userId) => {
     fetch(`http://127.0.0.1:5000/admin/users/${userId}`, {
       method: "DELETE",
-      credentials: "include",
+      credentials: "include", // Include session credentials if required
+      headers: {
+        "Content-Type": "application/json", // Set necessary headers
+      },
     })
       .then((response) => {
-        if (response.ok) {
-          setUsers(users.filter((user) => user.id !== userId));
-        } else {
-          console.error("Error deleting user");
+        if (!response.ok) {
+          throw new Error("Failed to delete user");
         }
+        return response.json();
       })
-      .catch((error) => console.error("Error:", error));
+      .then((data) => {
+        console.log("User deleted:", data);
+        setUsers(users.filter((user) => user.id !== userId)); // Update local state after successful deletion
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   const startEditing = (user) => {

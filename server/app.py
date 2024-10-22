@@ -228,6 +228,20 @@ class LogoutResource(Resource):
     def post(self):
         session.pop("user_id", None)
         return {"message": "Logged out successfully!"}, 200
+    
+class AdminUserResource(Resource):
+    def get(self):
+        users = User.query.all()
+        user_list = [{"id": user.id, "name": user.name, "email": user.email, "role": user.role} for user in users]
+        return user_list, 200  # Return list of users
+    
+    def delete(self, id):
+        user = User.query.get(id)
+        if not user:
+            return {"error": "User not found"}, 404
+        db.session.delete(user)
+        db.session.commit()
+        return {"message": "User deleted successfully"}, 200
 
 
 # Define RESTful resources and routes
@@ -240,6 +254,7 @@ api.add_resource(SignupResource, "/signup")
 api.add_resource(LoginResource, "/login")
 api.add_resource(ProtectedResource, "/protected")
 api.add_resource(LogoutResource, "/logout")
+api.add_resource(AdminUserResource, "/admin/users", "/admin/users/<int:id>")
 
 # Index route (renamed)
 @app.route("/")
