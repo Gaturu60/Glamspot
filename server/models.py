@@ -1,25 +1,13 @@
 from sqlalchemy_serializer import SerializerMixin  # type: ignore
-<<<<<<< HEAD
-from werkzeug.security import generate_password_hash, check_password_hash
-# from flask_login import UserMixin
-=======
 from sqlalchemy.ext.associationproxy import association_proxy
->>>>>>> backend-continuation
 from config import db, bcrypt
 
 # Association table for many-to-many relationship between Stylists and Services
 stylist_service = db.Table(
-<<<<<<< HEAD
-    'stylist_service',
-    db.Column('stylist_id', db.Integer, db.ForeignKey('stylists.id'), primary_key=True),
-    db.Column('service_id', db.Integer, db.ForeignKey('services.id'), primary_key=True),
-    db.Column('price', db.Float, nullable=False)  # Add a price attribute
-=======
     "stylist_service",
     db.Column("stylist_id", db.Integer, db.ForeignKey("stylists.id"), primary_key=True),
     db.Column("service_id", db.Integer, db.ForeignKey("services.id"), primary_key=True),
     db.Column("price", db.Float, nullable=False),  # Add a price attribute
->>>>>>> backend-continuation
 )
 
 
@@ -30,22 +18,6 @@ class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-<<<<<<< HEAD
-    password_hash = db.Column(db.String(200), nullable=False) #store hashed password
-    role = db.Column(db.String(20), nullable=False, default= 'user')
-
-
-    # Password handling methods
-    def set_password(self, password):
-        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-
-    def check_password(self, password):
-        return bcrypt.check_password_hash(self.password_hash, password)
-    
-
-    # One-to-Many Relationship: A user can have many bookings
-    bookings = db.relationship('Booking', back_populates='user', cascade='all, delete-orphan')
-=======
     password_hash = db.Column(db.String(128), nullable=False)
 
     # Hashes the password and stores it
@@ -58,7 +30,6 @@ class User(db.Model, SerializerMixin):
 
     # One-to-Many Relationship: A user can have many bookings
     bookings = db.relationship("Booking", backref="user", lazy=True)
->>>>>>> backend-continuation
 
     def to_dict(self):
         return {
@@ -78,11 +49,7 @@ class Stylist(db.Model, SerializerMixin):
     specialty = db.Column(db.String(120))
 
     # One-to-Many Relationship: A stylist can have multiple bookings
-<<<<<<< HEAD
-    bookings = db.relationship('Booking', back_populates='stylist')
-=======
     bookings = db.relationship("Booking", backref="stylist", lazy=True)
->>>>>>> backend-continuation
 
     # Many-to-Many Relationship with Services
     services = db.relationship(
@@ -106,17 +73,10 @@ class Service(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     description = db.Column(db.String(200))
-<<<<<<< HEAD
-    price = db.Column(db.Float, nullable=False)
-
-    # One-to-Many Relationship: A service can be part of multiple bookings
-    bookings = db.relationship('Booking', back_populates='service')
-=======
     image_path = db.Column(db.String(200))
 
     # One-to-Many Relationship: A service can be part of multiple bookings
     bookings = db.relationship("Booking", backref="service", lazy=True)
->>>>>>> backend-continuation
 
     # Many-to-Many Relationship with Stylists
     stylists = db.relationship(
@@ -142,17 +102,10 @@ class Booking(db.Model, SerializerMixin):
     service_id = db.Column(db.Integer, db.ForeignKey("services.id"), nullable=False)
     date_time = db.Column(db.DateTime, nullable=False)
 
-<<<<<<< HEAD
-    # Relationships: Define with back_populates
-    user = db.relationship('User', back_populates='bookings')
-    stylist = db.relationship('Stylist', back_populates='bookings')
-    service = db.relationship('Service', back_populates='bookings')
-=======
     # Relationships
     user = db.relationship("User", backref="bookings")
     stylist = db.relationship("Stylist", backref="bookings")
     service = db.relationship("Service", backref="bookings")
->>>>>>> backend-continuation
 
     def to_dict(self):
         return {

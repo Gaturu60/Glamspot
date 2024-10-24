@@ -22,18 +22,8 @@ if __name__ == "__main__":
 
          # Seed regular users
         users = []
-<<<<<<< HEAD
-        for _ in range(7):  # Create 7 regular users
-            user = User(
-                name=fake.name(),
-                email=fake.unique.email(),
-                role="user"  # Regular user
-            )
-            user.set_password("password123")  # Default password
-=======
         for _ in range(10):
             user = User(name=fake.name(), email=fake.unique.email())
->>>>>>> backend-continuation
             users.append(user)
 
         # Seed admin users
@@ -52,29 +42,18 @@ if __name__ == "__main__":
 
         # Seed stylists
         stylists = []
-<<<<<<< HEAD
-        for _ in range(12):
-            stylist = Stylist(name=fake.name(), specialty=rc(['Hair', 'Nails', 'Makeup', 'Massage', "Hot-stone Massage", 'Facial', 'Ear Cleaning']))
-=======
         for _ in range(5):
             stylist = Stylist(
                 name=fake.name(), specialty=rc(["Hair", "Nails", "Makeup", "Massage"])
             )
->>>>>>> backend-continuation
             stylists.append(stylist)
         db.session.bulk_save_objects(stylists)
 
         # Seed services
         services = []
-<<<<<<< HEAD
-        service_names = [ 'Makeup','Haircut', 'Manicure Set', 'Pedicure Set', 'Facial', 'Massage', 'Blow-Dry', 'Sauna', 'Ear Cleaning']
-        for name in service_names:
-            service = Service(name=name, description=fake.text(max_nb_chars=50), price=rc([300.0,500.0,700.0, 250.0, 400.0, 1000.0]))  # Added missing commas
-=======
         service_names = ["Haircut", "Manicure", "Pedicure", "Facial", "Massage"]
         for name in service_names:
             service = Service(name=name, description=fake.text(max_nb_chars=50))
->>>>>>> backend-continuation
             services.append(service)
         db.session.bulk_save_objects(services)
         
@@ -97,16 +76,6 @@ if __name__ == "__main__":
         }
     ]
 
-<<<<<<< HEAD
-        # Seed bookings
-        bookings = []
-        for _ in range(20):
-            booking = Booking(  
-                user_id=randint(1, 10),
-                stylist_id=randint(1, 5),
-                service_id=randint(1, len(services)),
-                date_time=fake.date_time_this_year()
-=======
         # Seed bookings (previously appointments)
     bookings = []
     for _ in range(20):
@@ -115,7 +84,6 @@ if __name__ == "__main__":
                 stylist_id=randint(1, 5),
                 service_id=randint(1, len(services)),
                 date_time=fake.date_time_this_year(),
->>>>>>> backend-continuation
             )
             bookings.append(booking)
     db.session.bulk_save_objects(bookings)
