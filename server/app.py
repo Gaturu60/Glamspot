@@ -4,7 +4,6 @@
 
 # Remote library imports
 from flask import request, session
-from flask_cors import CORS
 from flask_restful import Resource  # type: ignore
 from datetime import datetime
 import os
@@ -270,17 +269,70 @@ class AdminUserResource(Resource):
         return {"message": "User deleted successfully"}, 200
 
 
+# Authentication and Authorization Resources
+
+
+class SignupResource(Resource):
+    def post(self):
+        data = request.get_json()
+        username = data.get("username")
+        email = data.get("email")
+        password = data.get("password")
+
+        # Check if the email already exists
+        if User.query.filter_by(email=email).first():
+            return {"error": "Email already exists"}, 400
+
+        # Create new user and hash the password
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return {"message": "User registered successfully!"}, 201
+
+
+class LoginResource(Resource):
+    def post(self):
+        data = request.get_json()
+        email = data.get("email")
+        password = data.get("password")
+
+        user = User.query.filter_by(email=email).first()
+        if not user or not user.check_password(password):
+            return {"error": "Invalid email or password"}, 401
+
+        # Store the user id in session
+        session["user_id"] = user.id
+        return {"message": "Login successful"}, 200
+
+
+class ProtectedResource(Resource):
+    def get(self):
+        user_id = session.get("user_id")
+        if not user_id:
+            return {"error": "Unauthorized"}, 401
+
+        user = User.query.get(user_id)
+        return {"message": f"Welcome, {user.username}"}, 200
+
+
+# Logout Resource
+class LogoutResource(Resource):
+    def post(self):
+        session.pop("user_id", None)
+        return {"message": "Logged out successfully!"}, 200
+
+
 # Define RESTful resources and routes
-# api.add_resource(LoginResource, '/login')
-api.add_resource(UserResource, '/users', '/users/<int:id>')
-api.add_resource(StylistResource, '/stylists')
-api.add_resource(ServiceResource, '/services')  
-api.add_resource(BookingResource, '/bookings')
+api.add_resource(UserResource, "/users", "/users/<int:id>")
+api.add_resource(StylistResource, "/stylists", "/stylists/<int:id>")  # type: ignore
+api.add_resource(ServiceResource, "/services", "/services/<int:id>")  # type: ignore
+api.add_resource(BookingResource, "/bookings", "/bookings/<int:id>")
 api.add_resource(SignupResource, "/signup")
 api.add_resource(LoginResource, "/login")
 api.add_resource(ProtectedResource, "/protected")
 api.add_resource(LogoutResource, "/logout")
-api.add_resource(AdminUserResource, "/admin/users", "/admin/users/<int:id>")
 
 # Index route (renamed)
 @app.route("/")
