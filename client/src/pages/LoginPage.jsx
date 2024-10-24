@@ -67,7 +67,7 @@ function LoginPage() {
             onChange={formik.handleChange}
             value={formik.values.email}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+            className="mt-1 block w-auto border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           />
         </div>
 
@@ -85,7 +85,7 @@ function LoginPage() {
             onChange={formik.handleChange}
             value={formik.values.password}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+            className="mt-1 block w-auto border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           />
         </div>
 

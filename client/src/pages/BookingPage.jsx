@@ -90,7 +90,7 @@ function BookingPage() {
             onChange={formik.handleChange}
             value={formik.values.service}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+            className="mt-1 block w-auto border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           >
             <option value="">Select a service</option>
             {services.map((service) => (
@@ -114,7 +114,7 @@ function BookingPage() {
             onChange={formik.handleChange}
             value={formik.values.stylist}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+            className="mt-1 block w-auto border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           >
             <option value="">Select a stylist</option>
             {stylists.map((stylist) => (
@@ -139,7 +139,7 @@ function BookingPage() {
             onChange={formik.handleChange}
             value={formik.values.date}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
+            className="mt-1 block w-auto border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary p-2"
           />
         </div>
 
