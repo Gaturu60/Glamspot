@@ -13,10 +13,7 @@ sqlalchemy-serializer = "*"
 flask-restful = "*"
 flask-cors = "*"
 faker = "*"
-<<<<<<< HEAD
 flask-login = "*"
-=======
->>>>>>> backend-continuation
 flask-bcrypt = "*"
 
 [requires]
