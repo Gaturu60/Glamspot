@@ -47,21 +47,27 @@ function Navbar() {
             </Link>
           </li>
         )}
-        <li>
-          <Link to="/signup" className="text-white font-bold hover:underline">
-            Sign Up
-          </Link>
-        </li>
+        {/* Show sign up link if not authenticated */}
+        {!isAuthenticated && (
+          <li>
+            <Link to="/signup" className="text-white font-bold hover:underline">
+              Sign Up
+            </Link>
+          </li>
+        )}
         {/* Show login or logout button based on authentication state */}
         {!isAuthenticated ? (
           <li>
-            <Link to="/login" className="text-white font-bold">
+            <Link to="/login" className="text-white font-bold hover:underline">
               Login
             </Link>
           </li>
         ) : (
           <li>
-            <button onClick={handleLogout} className="text-white font-bold">
+            <button
+              onClick={handleLogout}
+              className="text-white font-bold hover:underline"
+            >
               Logout
             </button>
           </li>
