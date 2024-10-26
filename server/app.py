@@ -23,7 +23,7 @@ app.config['SESSION_COOKIE_SECURE']=True
 # # app = Flask(__name__)
 
 # # Enable CORS for all routes, including preflight (OPTIONS) requests
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5174"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 # Set the secret key to a random string
 app.secret_key = os.urandom(28)
