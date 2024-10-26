@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
         # Seed admin users
         admins = []
-        for i in range(3):  # Create 3 admin users
+        for i in range(1):  # Create 1 admin users
             admin = User(
                 name=f"Admin{i+1}",
                 email=f"admin{i+1}@example.com",
