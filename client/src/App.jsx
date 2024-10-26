@@ -9,8 +9,8 @@ import StylistsPage from "./pages/StylistsPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import LandingPage from "./pages/LandingPage";
+import ManageAccountPage from "./pages/ManageAccountPage";
 import { AuthContext, AuthProvider } from "./contexts/AuthContext";
-import backgroundImage from "./assets/background/pexels-david-geib-1265112-3268732.jpg";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useContext(AuthContext);
@@ -29,6 +29,16 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/contacts" element={<ContactsPage />} />
+
+            {/* Protected Route for Manage Account */}
+            <Route
+              path="/manage-account"
+              element={
+                <ProtectedRoute>
+                  <ManageAccountPage />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Protect Bookings Page */}
             <Route

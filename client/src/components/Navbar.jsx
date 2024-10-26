@@ -30,14 +30,24 @@ function Navbar() {
           </Link>
         </li>
         {isAuthenticated && userRole === "user" && (
-          <li>
-            <Link
-              to="/bookings"
-              className="text-white font-bold hover:underline"
-            >
-              Bookings
-            </Link>
-          </li>
+          <>
+            <li>
+              <Link
+                to="/bookings"
+                className="text-white font-bold hover:underline"
+              >
+                Bookings
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/manage-account"
+                className="text-white font-bold hover:underline"
+              >
+                Manage Account
+              </Link>
+            </li>
+          </>
         )}
 
         {isAuthenticated && userRole === "admin" && (

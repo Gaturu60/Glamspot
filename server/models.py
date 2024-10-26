@@ -74,7 +74,7 @@ class Service(db.Model, SerializerMixin):
     price = db.Column(db.Float, nullable=False)
 
     # One-to-Many Relationship: A service can be part of multiple bookings
-    bookings = db.relationship('Booking', back_populates='service')
+    bookings = db.relationship('Booking', back_populates='service', cascade='all, delete-orphan')
 
     # Many-to-Many Relationship with Stylists
     stylists = db.relationship('Stylist', secondary=stylist_service, back_populates='services')
@@ -84,7 +84,8 @@ class Service(db.Model, SerializerMixin):
             'id': self.id,
             'name': self.name,
             'description': self.description,
-            'bookings': [booking.to_dict() for booking in self.bookings]
+            'bookings': [booking.to_dict() for booking in self.bookings],
+            'services': [service.to_dict() for service in self.services]
         }
 
 # Booking Model 

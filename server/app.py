@@ -3,7 +3,7 @@
 # Standard library imports
 
 # Remote library imports
-from flask import request, session
+from flask import request, session, jsonify
 from flask_cors import CORS
 from flask_restful import Resource  # type: ignore
 from datetime import datetime
@@ -23,7 +23,7 @@ app.config['SESSION_COOKIE_SECURE']=True
 # # app = Flask(__name__)
 
 # # Enable CORS for all routes, including preflight (OPTIONS) requests
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5174"}})
 
 # Set the secret key to a random string
 app.secret_key = os.urandom(28)
@@ -68,10 +68,8 @@ class UserResource(Resource):
 
         data = request.get_json()
 
-        if "name" in data:
-            user.name = data["name"]
-        if "email" in data:
-            user.email = data["email"]
+        user.name = data.get("name", user.name)
+        user.email = data.get("email", user.email)
 
         db.session.commit()
         return {"message": "User updated successfully!", "user": user.to_dict()}, 200
@@ -81,6 +79,10 @@ class UserResource(Resource):
         user = User.query.get(id)
         if not user:
             return {"error": "User not found"}, 404
+        
+        # Prevent self-deletion for admin users
+        if session.get("user_id") == id:
+            return {"error": "Cannot delete yourself as an admin"}, 403
 
         db.session.delete(user)
         db.session.commit()
@@ -102,6 +104,16 @@ class StylistResource(Resource):
         db.session.add(new_stylist)
         db.session.commit()
         return {"message": "Stylist created successfully!"}, 201
+    
+    def delete(self, id):
+        stylist = Stylist.query.get(id)
+        if not stylist:
+            return {"error": "Stylist not found"}, 404
+
+        db.session.delete(stylist)
+        db.session.commit()
+        return {"message": "Stylist deleted successfully!"}, 200
+
 
 # Service Resource
 class ServiceResource(Resource):
@@ -119,6 +131,27 @@ class ServiceResource(Resource):
         db.session.add(new_service)
         db.session.commit()
         return {"message": "Service created successfully!"}, 201
+    
+    def patch(self, id):
+        stylist = Stylist.query.get(id)
+        if not stylist:
+            return {"error": "Stylist not found"}, 404
+
+        data = request.get_json()
+        stylist.name = data.get("name", stylist.name)
+        stylist.specialty = data.get("specialty", stylist.specialty)
+
+        db.session.commit()
+        return {"message": "Stylist updated successfully!"}, 200
+
+    def delete(self, id):
+        stylist = Stylist.query.get(id)
+        if not stylist:
+            return {"error": "Stylist not found"}, 404
+
+        db.session.delete(stylist)
+        db.session.commit()
+        return {"message": "Stylist deleted successfully!"}, 200
 
 # Booking Resource
 class BookingResource(Resource):
@@ -161,6 +194,30 @@ class BookingResource(Resource):
 
         except Exception as e:
             return {"error": str(e)}, 500
+        
+    def patch(self, id):
+        booking = Booking.query.get(id)
+        if not booking:
+            return {"error": "Booking not found"}, 404
+
+        data = request.get_json()
+        if "date_time" in data:
+            try:
+                booking.date_time = datetime.fromisoformat(data["date_time"])
+            except ValueError:
+                return {"error": "Invalid date format"}, 400
+
+        db.session.commit()
+        return {"message": "Booking updated successfully!"}, 200
+
+    def delete(self, id):
+        booking = Booking.query.get(id)
+        if not booking:
+            return {"error": "Booking not found"}, 404
+
+        db.session.delete(booking)
+        db.session.commit()
+        return {"message": "Booking deleted successfully!"}, 200
         
         
         
@@ -211,16 +268,16 @@ class ProtectedResource(Resource):
     def get(self):
         user_id = session.get("user_id")
         if not user_id:
-            print("No active session")
             return {"error": "Unauthorized"}, 401
 
         user = User.query.get(user_id)
-        if user:
-            print(f"User {user_id} is accessing protected route.")
-            return {"message": f"Welcome {user.name}"}, 200
-        else:
-            print(f"Session contains invalid user_id: {user_id}")
-            return {"error": "Invalid session"}, 401
+        if not user:
+            return {"error": "User not found"}, 404
+
+        # Ensure it returns the user's data as {"user": { ... }}
+        return {"user": user.to_dict()}, 200
+
+
 
 
 # Logout Resource
@@ -241,19 +298,21 @@ class AdminUserResource(Resource):
             return {"error": "User not found"}, 404
 
         data = request.get_json()
+
+        # Allow admins to update fields
         name = data.get('name')
         email = data.get('email')
         role = data.get('role')
 
-        # Update only if provided in the request
+        # Update fields if they are provided in request
         if name:
             user.name = name
         if email:
             user.email = email
-
-        # Restrict role updates to admin users only
+        
+        # Restricting role updates to admin-only permission
         if role and role == "admin":
-            if session.get('user_role') == 'admin':  # Ensure only admins can assign admin role
+            if session.get('user_role') == 'admin':  # Verify admin status
                 user.role = role
             else:
                 return {"error": "Only admins can assign the admin role"}, 403
@@ -269,18 +328,87 @@ class AdminUserResource(Resource):
         db.session.commit()
         return {"message": "User deleted successfully"}, 200
 
+class UserBookingResource(Resource):
+    def get(self):
+        user_id = session.get("user_id")
+        if not user_id:
+            return {"error": "Unauthorized"}, 401
+
+        user = User.query.get(user_id)
+        if not user:
+            return {"error": "User not found"}, 404
+
+        bookings = [
+            {
+                "id": booking.id,
+                "stylist_name": booking.stylist.name,
+                "service_name": booking.service.name,
+                "date": booking.date_time.isoformat()
+            }
+            for booking in user.bookings
+        ]
+
+        return ({"bookings": bookings}), 200
+    
+    def delete(self, booking_id):
+        user_id = session.get("user_id")
+        if not user_id:
+            return {"error": "Unauthorized"}, 401
+
+        booking = Booking.query.filter_by(id=booking_id, user_id=user_id).first()
+        if not booking:
+            return {"error": "Booking not found"}, 404
+
+        db.session.delete(booking)
+        db.session.commit()
+        return {"message": "Booking deleted successfully!"}, 200
+class UserAccountResource(Resource):
+    def patch(self):
+        user_id = session.get("user_id")
+        if not user_id:
+            return {"error": "Unauthorized"}, 401
+
+        user = User.query.get(user_id)
+        if not user:
+            return {"error": "User not found"}, 404
+
+        data = request.get_json()
+        if "name" in data:
+            user.name = data["name"]
+        if "email" in data:
+            user.email = data["email"]
+        if "password" in data:
+            user.set_password(data["password"])  # Assuming set_password hashes the password
+
+        db.session.commit()
+        return {"message": "Account updated successfully"}, 200
+
+    def delete(self):
+        user_id = session.get("user_id")
+        if not user_id:
+            return {"error": "Unauthorized"}, 401
+
+        user = User.query.get(user_id)
+        if not user:
+            return {"error": "User not found"}, 404
+
+        db.session.delete(user)
+        db.session.commit()
+        return {"message": "Account deleted successfully"}, 200    
 
 # Define RESTful resources and routes
 # api.add_resource(LoginResource, '/login')
 api.add_resource(UserResource, '/users', '/users/<int:id>')
-api.add_resource(StylistResource, '/stylists')
-api.add_resource(ServiceResource, '/services')  
-api.add_resource(BookingResource, '/bookings')
+api.add_resource(StylistResource, '/stylists','/stylists/<int:id>')
+api.add_resource(ServiceResource, '/services')
+api.add_resource(BookingResource, '/bookings','/bookings/<int:id>')
 api.add_resource(SignupResource, "/signup")
 api.add_resource(LoginResource, "/login")
 api.add_resource(ProtectedResource, "/protected")
 api.add_resource(LogoutResource, "/logout")
 api.add_resource(AdminUserResource, "/admin/users", "/admin/users/<int:id>")
+api.add_resource(UserBookingResource, "/user/bookings","/user/bookings/<int:booking_id>")
+api.add_resource(UserAccountResource, "/user/account")
 
 # Index route (renamed)
 @app.route("/")

@@ -9,9 +9,8 @@
   --border-color: #101010d8; /* Light border color */
 }
 
-/* Global styles */
-body {
-  font-family: "Poppins", sans-serif; /* Modern font */
+Global styles body {
+  font-family: "Poppins", sans-serif;
   background-color: var(--background-color);
   margin: 0;
   padding: 0;

@@ -4,11 +4,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        "custom-bg": "url('/images/istockphoto-1261155521-612x612.jpg')",
+      },
       colors: {
-        primary: '#6b5b9a',
-        secondary: '#ff8c94',
+        primary: "#6b5b9a",
+        secondary: "#ff8c94",
       },
     },
   },
   plugins: [],
-}
+};

@@ -3,72 +3,142 @@ import { useFormik } from "formik";
 
 function AdminPage() {
   const [users, setUsers] = useState([]);
+  const [stylists, setStylists] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [services, setServices] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
+  const [editingStylistId, setEditingStylistId] = useState(null);
+  const [editingBookingId, setEditingBookingId] = useState(null);
 
-  // Fetch users on component mount
+  // Fetch users, stylists, services and bookings on component mount
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/admin/users", {
+    fetch("http://127.0.0.1:5000/users", {
       method: "GET",
       credentials: "include",
     })
       .then((response) => response.json())
-      .then((data) => setUsers(data))
+      .then((data) => setUsers(data.users || []))
       .catch((error) => console.error("Error fetching users:", error));
+
+    fetch("http://127.0.0.1:5000/stylists", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => setStylists(data.stylists || []))
+      .catch((error) => console.error("Error fetching stylists:", error));
+
+    fetch("http://127.0.0.1:5000/bookings", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => setBookings(data || []))
+      .catch((error) => console.error("Error fetching bookings:", error));
+
+    fetch("http://127.0.0.1:5000/services", {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => setServices(data.services || []))
+      .catch((error) => console.error("Error fetching services:", error));
   }, []);
 
-  // Define formik for user editing form
-  const formik = useFormik({
-    initialValues: { name: "", email: "", role: "" },
-    enableReinitialize: true,
-    onSubmit: (values) => {
-      fetch(`http://127.0.0.1:5000/admin/users/${editingUserId}`, {
-        method: "PATCH",
+  // Formik setup for adding a new stylist
+  const addStylistFormik = useFormik({
+    initialValues: { name: "", specialty: "" },
+    onSubmit: (values, { resetForm }) => {
+      fetch("http://127.0.0.1:5000/stylists", {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(values),
       })
-        .then((response) => {
-          if (response.ok) {
-            // Update users list after edit
+        .then((response) => response.json())
+        .then((newStylist) => {
+          setStylists([...stylists, newStylist]);
+          resetForm(); // Reset form fields after successful submission
+        })
+        .catch((error) => console.error("Error adding stylist:", error));
+    },
+  });
+
+  // Formik setup for editing user details
+  const userFormik = useFormik({
+    initialValues: { name: "", email: "" },
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      fetch(`http://127.0.0.1:5000/users/${editingUserId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(values), // Ensure values contain name and email
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            console.error("Error updating user:", data.error);
+          } else {
             setUsers((prevUsers) =>
               prevUsers.map((user) =>
                 user.id === editingUserId ? { ...user, ...values } : user
               )
             );
-            setEditingUserId(null); // Exit edit mode after updating
-          } else {
-            console.error("Error updating user");
+            setEditingUserId(null); // Close edit mode on success
           }
         })
-        .catch((error) => console.error("Error:", error));
+        .catch((error) => console.error("Error updating user:", error));
     },
   });
 
-  // Start editing a user
-  const startEditing = (user) => {
-    setEditingUserId(user.id);
-    formik.setValues({
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    });
-  };
-
-  // Delete a user
+  // Delete functions
   const deleteUser = (userId) => {
-    fetch(`http://127.0.0.1:5000/admin/users/${userId}`, {
+    fetch(`http://127.0.0.1:5000/users/${userId}`, {
       method: "DELETE",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
       .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to delete user");
+        if (response.ok) {
+          setUsers((prevUsers) =>
+            prevUsers.filter((user) => user.id !== userId)
+          );
         }
-        // Update users state after deletion
-        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => console.error("Error deleting user:", error));
+  };
+
+  const deleteStylist = (stylistId) => {
+    fetch(`http://127.0.0.1:5000/stylists/${stylistId}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => {
+        if (response.ok) {
+          setStylists((prevStylists) =>
+            prevStylists.filter((stylist) => stylist.id !== stylistId)
+          );
+        }
+      })
+      .catch((error) => console.error("Error deleting stylist:", error));
+  };
+
+  const deleteBooking = (bookingId) => {
+    fetch(`http://127.0.0.1:5000/bookings/${bookingId}`, {
+      method: "DELETE",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => {
+        if (response.ok) {
+          setBookings((prevBookings) =>
+            prevBookings.filter((booking) => booking.id !== bookingId)
+          );
+        }
+      })
+      .catch((error) => console.error("Error deleting booking:", error));
   };
 
   return (
@@ -112,78 +182,163 @@ function AdminPage() {
           Admin Management
         </h1>
 
-        {/* Users Section */}
+        {/* Manage Users */}
         <div id="manage-users" className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-800">Users</h2>
           <ul className="mt-4 space-y-4">
             {users.map((user) => (
               <li key={user.id} className="p-4 bg-white rounded shadow">
-                {editingUserId === user.id ? (
-                  <form onSubmit={formik.handleSubmit} className="space-y-2">
-                    <input
-                      name="name"
-                      type="text"
-                      onChange={formik.handleChange}
-                      value={formik.values.name}
-                      placeholder="Name"
-                      className="w-full p-2 border rounded"
-                    />
-                    <input
-                      name="email"
-                      type="email"
-                      onChange={formik.handleChange}
-                      value={formik.values.email}
-                      placeholder="Email"
-                      className="w-full p-2 border rounded"
-                    />
-                    <select
-                      name="role"
-                      onChange={formik.handleChange}
-                      value={formik.values.role}
-                      className="w-full p-2 border rounded"
-                    >
-                      <option value="user">User</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                    <div className="flex space-x-2">
-                      <button
-                        type="submit"
-                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                      >
-                        Save
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditingUserId(null)}
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                ) : (
-                  <>
-                    <p className="text-lg font-medium">
-                      {user.name} ({user.email}) - Role: {user.role}
-                    </p>
-                    <div className="flex space-x-2 mt-2">
-                      <button
-                        onClick={() => startEditing(user)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deleteUser(user.id)}
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </>
-                )}
+                <p className="text-lg font-medium">
+                  {user.name} ({user.email})
+                </p>
+                <div className="flex space-x-2 mt-2">
+                  <button
+                    onClick={() => {
+                      setEditingUserId(user.id); // Set the user to edit
+                      userFormik.setValues({
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                      }); // Populate form with user data
+                    }}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => deleteUser(user.id)}
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
               </li>
             ))}
+          </ul>
+
+          {/* Edit User Form */}
+          {editingUserId && (
+            <form
+              onSubmit={userFormik.handleSubmit}
+              className="p-4 bg-gray-100 rounded shadow mt-4"
+            >
+              <h2 className="text-xl font-semibold mb-4">Edit User</h2>
+              <label>
+                Name:
+                <input
+                  name="name"
+                  type="text"
+                  onChange={userFormik.handleChange}
+                  value={userFormik.values.name}
+                  className="p-2 border rounded w-full"
+                />
+              </label>
+              <label>
+                Email:
+                <input
+                  name="email"
+                  type="email"
+                  onChange={userFormik.handleChange}
+                  value={userFormik.values.email}
+                  className="p-2 border rounded w-full"
+                />
+              </label>
+              <button
+                type="submit"
+                className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Save Changes
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditingUserId(null)} // Cancel editing
+                className="mt-4 ml-2 px-4 py-2 bg-gray-500 text-white rounded"
+              >
+                Cancel
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* Manage Stylists */}
+        <div id="manage-stylists" className="mb-8">
+          <h2 className="text-2xl font-semibold text-gray-800">Stylists</h2>
+
+          {/* Add New Stylist Form */}
+          <form
+            onSubmit={addStylistFormik.handleSubmit}
+            className="p-4 bg-white rounded shadow mb-4 space-y-2"
+          >
+            <h3 className="text-lg font-medium">Add New Stylist</h3>
+            <input
+              name="name"
+              type="text"
+              onChange={addStylistFormik.handleChange}
+              value={addStylistFormik.values.name}
+              placeholder="Name"
+              className="w-full p-2 border rounded"
+            />
+            <input
+              name="specialty"
+              type="text"
+              onChange={addStylistFormik.handleChange}
+              value={addStylistFormik.values.specialty}
+              placeholder="Specialty"
+              className="w-full p-2 border rounded"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Add Stylist
+            </button>
+          </form>
+
+          <ul className="mt-4 space-y-4">
+            {stylists.map((stylist) => (
+              <li key={stylist.id} className="p-4 bg-white rounded shadow">
+                <p className="text-lg font-medium">
+                  {stylist.name} - Specialty: {stylist.specialty}
+                </p>
+                <button
+                  onClick={() => deleteStylist(stylist.id)}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Manage Bookings */}
+        <div id="manage-bookings">
+          <h2 className="text-2xl font-semibold text-gray-800">Bookings</h2>
+          <ul className="mt-4 space-y-4">
+            {bookings.map((booking) => {
+              const user = users.find((u) => u.id === booking.user_id);
+              const stylist = stylists.find((s) => s.id === booking.stylist_id);
+              const service = services.find(
+                (srv) => srv.id === booking.service_id
+              );
+              return (
+                <li key={booking.id} className="p-4 bg-white rounded shadow">
+                  <p className="text-lg font-medium">
+                    Booking ID: {booking.id}
+                  </p>
+                  <p>User: {user ? user.name : "Unknown User"}</p>
+                  <p>Stylist: {stylist ? stylist.name : "Unknown Stylist"}</p>
+                  <p>Service: {service ? service.name : "Unknown Service"}</p>
+                  <p>Date: {booking.date_time}</p>
+                  <button
+                    onClick={() => deleteBooking(booking.id)}
+                    className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </main>
