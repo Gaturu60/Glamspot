@@ -1,78 +1,75 @@
-#!/usr/bin/env python3
+from app import app, db
+from models import User, Stylist, Service, Booking
+from datetime import datetime
+import random
 
-# Standard library imports
-from random import randint, choice as rc
+print("Starting seed...")
 
-# Remote library imports
-from faker import Faker  # type: ignore
+with app.app_context():
+    # Clear tables in reverse dependency order
+    db.session.query(Booking).delete()
+    db.session.query(Service).delete()
+    db.session.query(Stylist).delete()
+    db.session.query(User).delete()
+    db.session.commit()
 
-# Local imports
-from app import app
-from models import db, User, Stylist, Service, Booking  # Changed Appointment to Booking
+    # 1. Seed Users
+    users_data = [
+        {"name": "Admin User", "email": "admin@example.com", "role": "admin"},
+        {"name": "User1", "email": "user1@example.com", "role": "user"},
+        {"name": "User2", "email": "user2@example.com", "role": "user"},
+        {"name": "User3", "email": "user3@example.com", "role": "user"},
+        {"name": "User4", "email": "user4@example.com", "role": "user"},
+    ]
+    users = [User(name=data["name"], email=data["email"], role=data["role"]) for data in users_data]
+    for user in users:
+        user.set_password("password")
+    db.session.bulk_save_objects(users)
+    db.session.commit()
 
-if __name__ == '__main__':
-    fake = Faker()
+    # Refresh users to ensure IDs are available
+    users = User.query.all()
+    user_ids = [user.id for user in users]
 
-    with app.app_context():
-        print("Starting seed...")
+    # 2. Seed Stylists
+    stylists_data = [
+        {"name": "Stylist1", "specialty": "Hair"},
+        {"name": "Stylist2", "specialty": "Makeup"},
+        {"name": "Stylist3", "specialty": "Nails"},
+    ]
+    stylists = [Stylist(**data) for data in stylists_data]
+    db.session.bulk_save_objects(stylists)
+    db.session.commit()
 
-        # Drop all tables and recreate them
-        db.drop_all()
-        db.create_all()
+    # Refresh stylists to ensure IDs are available
+    stylists = Stylist.query.all()
+    stylist_ids = [stylist.id for stylist in stylists]
 
-         # Seed regular users
-        users = []
-        for _ in range(7):  # Create 7 regular users
-            user = User(
-                name=fake.name(),
-                email=fake.unique.email(),
-                role="user"  # Regular user
-            )
-            user.set_password("password123")  # Default password
-            users.append(user)
+    # 3. Seed Services
+    services_data = [
+        {"name": "Haircut", "description": "Basic haircut service", "price": 30.0},
+        {"name": "Manicure", "description": "Basic manicure service", "price": 20.0},
+        {"name": "Makeup", "description": "Full face makeup", "price": 50.0},
+    ]
+    services = [Service(**data) for data in services_data]
+    db.session.bulk_save_objects(services)
+    db.session.commit()
 
-        # Seed admin users
-        admins = []
-        for i in range(1):
-            admin = User(
-                name=f"Glamspot Admin {i+1}",
-                email=f"glamspotadmin{i+1}@glamspot.com",
-                role="admin"  # Admin user
-            )
-            admin.set_password("glamspot@admin")  # Default admin password
-            admins.append(admin)
+    # Refresh services to ensure IDs are available
+    services = Service.query.all()
+    service_ids = [service.id for service in services]
 
-        db.session.bulk_save_objects(users + admins)
+    # 4. Seed Bookings
+    bookings = [
+        Booking(
+            user_id=random.choice(user_ids),
+            stylist_id=random.choice(stylist_ids),
+            service_id=random.choice(service_ids),
+            date_time=datetime.now()
+        )
+        for _ in range(10)
+    ]
+    db.session.bulk_save_objects(bookings)
+    db.session.commit()
 
-
-        # # Seed stylists
-        # stylists = []
-        # for _ in range(12):
-        #     stylist = Stylist(name=fake.name(), specialty=rc(['Hair', 'Nails', 'Makeup', 'Massage', "Hot-stone Massage", 'Facial', 'Ear Cleaning']))
-        #     stylists.append(stylist)
-        # db.session.bulk_save_objects(stylists)
-
-        # # Seed services
-        # services = []
-        # service_names = [ 'Makeup','Haircut', 'Manicure Set', 'Pedicure Set', 'Facial', 'Massage', 'Blow-Dry', 'Sauna', 'Ear Cleaning']
-        # for name in service_names:
-        #     service = Service(name=name, description=fake.text(max_nb_chars=50), price=rc([300.0,500.0,700.0, 250.0, 400.0, 1000.0]))  # Added missing commas
-        #     services.append(service)
-        # db.session.bulk_save_objects(services)
-
-        # # Seed bookings
-        # bookings = []
-        # for _ in range(20):
-        #     booking = Booking(  
-        #         user_id=randint(1, 10),
-        #         stylist_id=randint(1, 5),
-        #         service_id=randint(1, len(services)),
-        #         date_time=fake.date_time_this_year()
-        #     )
-        #     bookings.append(booking)
-        # db.session.bulk_save_objects(bookings)
-
-        # # Commit all changes
-        # db.session.commit()
-
-        print("Seeding completed.")
+    print("Seeding complete!")
