@@ -15,7 +15,7 @@ with app.app_context():
 
     # 1. Seed Users
     users_data = [
-        {"name": "Admin User", "email": "admin@example.com", "role": "admin"},
+        {"name": "GlamspotAdmin", "email": "admin@glamspot.com", "role": "admin"},
         {"name": "User1", "email": "user1@example.com", "role": "user"},
         {"name": "User2", "email": "user2@example.com", "role": "user"},
         {"name": "User3", "email": "user3@example.com", "role": "user"},
@@ -23,7 +23,7 @@ with app.app_context():
     ]
     users = [User(name=data["name"], email=data["email"], role=data["role"]) for data in users_data]
     for user in users:
-        user.set_password("password")
+        user.set_password("admin@password")
     db.session.bulk_save_objects(users)
     db.session.commit()
 
