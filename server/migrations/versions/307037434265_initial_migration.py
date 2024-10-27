@@ -1,8 +1,8 @@
-"""roles column added to User model
+"""Initial migration.
 
-Revision ID: 5c609904de54
+Revision ID: 307037434265
 Revises: 
-Create Date: 2024-10-21 15:30:42.123724
+Create Date: 2024-10-26 23:37:39.418707
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5c609904de54'
+revision = '307037434265'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -57,7 +57,8 @@ def upgrade():
     sa.Column('price', sa.Float(), nullable=False),
     sa.ForeignKeyConstraint(['service_id'], ['services.id'], name=op.f('fk_stylist_service_service_id_services')),
     sa.ForeignKeyConstraint(['stylist_id'], ['stylists.id'], name=op.f('fk_stylist_service_stylist_id_stylists')),
-    sa.PrimaryKeyConstraint('stylist_id', 'service_id')
+    sa.PrimaryKeyConstraint('stylist_id', 'service_id'),
+    info={'bind_key': None}
     )
     # ### end Alembic commands ###
 
