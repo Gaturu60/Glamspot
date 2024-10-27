@@ -47,7 +47,7 @@ db.init_app(app)
 api = Api(app)
 
 # Instantiate CORS
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://glamspot-1.onrender.com/"}})  # Enable CORS for all routes
+CORS(app, resources={r"/*": {"origins": "https://glamspot-1.onrender.com"}}, supports_credentials=True)
 
 # Configure Cloudinary
 cloudinary.config(
