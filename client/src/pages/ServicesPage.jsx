@@ -28,6 +28,11 @@ function ServicesPage() {
             key={service.id}
             className="list-item p-4 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105"
           >
+            <img
+              src={service.image_url}
+              alt={service.name}
+              className="w-full h-48 object-cover rounded-lg mb-4"
+            />
             <h2 className="font-semibold text-lg">{service.name}</h2>
             <p className="text-gray-600">Ksh.{service.price}</p>
           </li>

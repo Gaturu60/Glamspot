@@ -74,6 +74,7 @@ class Service(db.Model, SerializerMixin):
     name = db.Column(db.String(80), nullable=False)
     description = db.Column(db.String(200))
     price = db.Column(db.Float, nullable=False)
+    image_url = db.Column(db.String, nullable=True)
 
     # One-to-Many Relationship: A service can be part of multiple bookings
     bookings = db.relationship('Booking', back_populates='service', cascade='all, delete-orphan')
@@ -83,11 +84,11 @@ class Service(db.Model, SerializerMixin):
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'name': self.name,
-            'description': self.description,
+            "id": self.id,
+            "name": self.name,
+            "price": self.price,
+            "image_url": self.image_url,
             'bookings': [booking.to_dict() for booking in self.bookings],
-            'services': [service.to_dict() for service in self.services]
         }
 
 # Booking Model 

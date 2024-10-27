@@ -7,8 +7,8 @@ function AdminPage() {
   const [bookings, setBookings] = useState([]);
   const [services, setServices] = useState([]);
   const [editingUserId, setEditingUserId] = useState(null);
-  const [editingStylistId, setEditingStylistId] = useState(null);
-  const [editingBookingId, setEditingBookingId] = useState(null);
+  // const [editingStylistId, setEditingStylistId] = useState(null);
+  // const [editingBookingId, setEditingBookingId] = useState(null);
 
   // Fetch users, stylists, services and bookings on component mount
   useEffect(() => {
@@ -64,6 +64,31 @@ function AdminPage() {
           resetForm(); // Reset form fields after successful submission
         })
         .catch((error) => console.error("Error adding stylist:", error));
+    },
+  });
+
+  // Formik setup for adding a new service
+  const addServiceFormik = useFormik({
+    initialValues: { name: "", description: "", price: "", image: null },
+    onSubmit: (values, { resetForm }) => {
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("description", values.description);
+      formData.append("price", values.price);
+      formData.append("image", values.image);
+
+      fetch("http://127.0.0.1:5000/services", {
+        method: "POST",
+        body: formData,
+        credentials: "include",
+      })
+        .then((response) => response.json())
+        .then((newService) => {
+          setServices([...services, newService.service]);
+          resetForm(); // Reset form fields after submission
+          alert("Service added successfully!");
+        })
+        .catch((error) => console.error("Error adding service:", error));
     },
   });
 
@@ -144,14 +169,31 @@ function AdminPage() {
       .catch((error) => console.error("Error deleting booking:", error));
   };
 
+  const deleteService = (serviceId) => {
+    fetch(`http://127.0.0.1:5000/services/${serviceId}`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (response.ok) {
+          setServices((prevServices) =>
+            prevServices.filter((service) => service.id !== serviceId)
+          );
+        } else {
+          console.error("Failed to delete service");
+        }
+      })
+      .catch((error) => console.error("Error deleting service:", error));
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="w-64 bg-purple-600 text-white p-5 space-y-4">
-        <h2 className="text-2xl font-semibold mb-6">Admin Dashboard</h2>
-        <nav>
+        <nav className="fixed h-full">
           <ul className="space-y-2">
             <li>
+              <h2 className="text-2xl font-semibold mb-6">Admin Dashboard</h2>
               <a
                 href="#manage-users"
                 className="block py-2 px-4 rounded hover:bg-purple-700"
@@ -175,6 +217,14 @@ function AdminPage() {
                 Manage Bookings
               </a>
             </li>
+            <li>
+              <a
+                href="#manage-services"
+                className="block py-2 px-4 rounded hover:bg-purple-700"
+              >
+                Manage Services
+              </a>
+            </li>
           </ul>
         </nav>
       </aside>
@@ -187,7 +237,7 @@ function AdminPage() {
 
         {/* Manage Users */}
         <div id="manage-users" className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800">Users</h2>
+          <h2 className="text-2xl font-semibold text-gray-800">Manage Users</h2>
           <ul className="mt-4 space-y-4">
             {users.map((user) => (
               <li key={user.id} className="p-4 bg-white rounded shadow">
@@ -316,10 +366,10 @@ function AdminPage() {
                   <img
                     src={stylist.image_url}
                     alt={stylist.name}
-                    className="w-auto h-48 object-cover rounded-lg mb-4"
+                    className="w- h-48 object-cover rounded-lg mb-4"
                   />
                 ) : (
-                  <p>No image available</p>
+                  <p className="text-gray-500">No image available</p>
                 )}
                 <p className="text-lg font-medium">
                   {stylist.name} - Specialty: {stylist.specialty}
@@ -363,6 +413,88 @@ function AdminPage() {
                 </li>
               );
             })}
+          </ul>
+        </div>
+        {/* Manage Services */}
+        <div id="manage-services">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+            Manage Services
+          </h2>
+
+          {/* Add New Service Form */}
+          <form
+            onSubmit={addServiceFormik.handleSubmit}
+            className="mb-8 p-4 bg-white rounded shadow"
+          >
+            <h3 className="text-lg font-medium mb-4">Add New Service</h3>
+            <input
+              name="name"
+              type="text"
+              onChange={addServiceFormik.handleChange}
+              value={addServiceFormik.values.name}
+              placeholder="Service Name"
+              className="w-full p-2 border rounded mb-2"
+            />
+            <textarea
+              name="description"
+              onChange={addServiceFormik.handleChange}
+              value={addServiceFormik.values.description}
+              placeholder="Service Description"
+              className="w-full p-2 border rounded"
+              rows="3"
+            />
+            <input
+              name="price"
+              type="number"
+              onChange={addServiceFormik.handleChange}
+              value={addServiceFormik.values.price}
+              placeholder="Price"
+              className="w-full p-2 border rounded mb-2"
+            />
+            <input
+              name="image"
+              type="file"
+              accept="image/*"
+              onChange={(event) =>
+                addServiceFormik.setFieldValue(
+                  "image",
+                  event.currentTarget.files[0]
+                )
+              }
+              className="w-full p-2 border rounded mb-4"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Add Service
+            </button>
+          </form>
+
+          {/* Display existing services */}
+          <ul className="mt-4 space-y-4">
+            {services.map((service) => (
+              <li key={service.id} className="p-4 bg-white rounded shadow">
+                {service.image_url ? (
+                  <img
+                    src={service.image_url}
+                    alt={service.name}
+                    className="w-20 h-20 mb-2"
+                  />
+                ) : (
+                  <p className="text-gray-500">No image available</p> // Fallback message if image_url is undefined
+                )}
+                <p className="text-lg font-medium">{service.name}</p>
+                <p className="text-gray-600">{service.description}</p>
+                <p className="text-gray-600">Price: ${service.price}</p>
+                <button
+                  onClick={() => deleteService(service.id)}
+                  className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 mt-2"
+                >
+                  Delete
+                </button>
+              </li>
+            ))}
           </ul>
         </div>
       </main>

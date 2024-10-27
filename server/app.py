@@ -157,38 +157,59 @@ class ServiceResource(Resource):
     def get(self):
         services = Service.query.all()
         service_list = [
-            {"id": service.id, "name": service.name, "price": service.price}
+            {"id": service.id, "name": service.name, "description": service.description, "price": service.price, "image_url": service.image_url}
             for service in services
         ]
         return {"services": service_list}, 200
 
     def post(self):
-        data = request.get_json()
-        new_service = Service(name=data["name"], price=data["price"])
+        name = request.form.get("name")
+        description = request.form.get("description")
+        price = request.form.get("price")
+        # Reconfigure Cloudinary within the method to ensure variables are present
+        cloudinary.config(
+            cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+            api_key=os.getenv("CLOUDINARY_API_KEY"),
+            api_secret=os.getenv("CLOUDINARY_API_SECRET")
+        )
+        api_key = os.getenv("CLOUDINARY_API_KEY")
+        if not api_key:
+            print("API Key is None inside the method")
+        # Upload the image to Cloudinary
+        image_file = request.files.get("image")
+        if image_file:
+            upload_result = upload(image_file)
+        else:
+            print("No image file provided.")       
+        image_url = upload_result.get("secure_url")
+
+        new_service = Service(name=name, price=price, description=description, image_url=image_url)
         db.session.add(new_service)
         db.session.commit()
-        return {"message": "Service created successfully!"}, 201
+        return {"message": "Service created successfully!", "service": new_service.to_dict()}, 201
     
     def patch(self, id):
-        stylist = Stylist.query.get(id)
-        if not stylist:
+        service = Service.query.get(id)
+        if not service:
             return {"error": "Stylist not found"}, 404
 
         data = request.get_json()
-        stylist.name = data.get("name", stylist.name)
-        stylist.specialty = data.get("specialty", stylist.specialty)
+        service.name = data.get("name", service.name)
+        service.description = data.get("description", service.desccription)
+        service.price = data.get("price", service.price)
+        service.image_url = data.get("image_url", service.image_url)
 
         db.session.commit()
-        return {"message": "Stylist updated successfully!"}, 200
+        return {"message": "Service updated successfully!"}, 200
 
     def delete(self, id):
-        stylist = Stylist.query.get(id)
-        if not stylist:
-            return {"error": "Stylist not found"}, 404
+        service = Service.query.get(id)
+        if not service:
+            return {"error": "Service not found"}, 404
 
-        db.session.delete(stylist)
+        db.session.delete(service)
         db.session.commit()
-        return {"message": "Stylist deleted successfully!"}, 200
+        return {"message": "Service deleted successfully!"}, 200
 
 # Booking Resource
 class BookingResource(Resource):
@@ -437,7 +458,7 @@ class UserAccountResource(Resource):
 # api.add_resource(LoginResource, '/login')
 api.add_resource(UserResource, '/users', '/users/<int:id>')
 api.add_resource(StylistResource, '/stylists','/stylists/<int:id>')
-api.add_resource(ServiceResource, '/services')
+api.add_resource(ServiceResource, '/services', '/services/<int:id>')
 api.add_resource(BookingResource, '/bookings','/bookings/<int:id>')
 api.add_resource(SignupResource, "/signup")
 api.add_resource(LoginResource, "/login")
