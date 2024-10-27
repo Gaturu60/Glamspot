@@ -15,7 +15,7 @@ function SignUpPage() {
     e.preventDefault();
 
     // Send data to backend to create a new user
-    fetch("http://127.0.0.1:5000/users", {
+    fetch("https://glamspot.onrender.com/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),

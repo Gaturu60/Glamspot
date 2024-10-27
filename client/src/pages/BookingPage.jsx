@@ -9,7 +9,7 @@ function BookingPage() {
 
   // Check if user is authenticated
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/protected", {
+    fetch("https://glamspot.onrender.com/protected", {
       method: "GET",
       credentials: "include", // Make sure session cookies are sent
     })
@@ -24,12 +24,12 @@ function BookingPage() {
 
   // Fetch services and stylists from the backend
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/services")
+    fetch("https://glamspot.onrender.com/services")
       .then((response) => response.json())
       .then((data) => setServices(data.services))
       .catch((error) => console.error("Error fetching services:", error));
 
-    fetch("http://127.0.0.1:5000/stylists")
+    fetch("https://glamspot.onrender.com/stylists")
       .then((response) => response.json())
       .then((data) => setStylists(data.stylists))
       .catch((error) => console.error("Error fetching stylists:", error));
@@ -44,7 +44,7 @@ function BookingPage() {
     },
     onSubmit: (values) => {
       // Send booking data to the backend
-      fetch("http://127.0.0.1:5000/bookings", {
+      fetch("https://glamspot.onrender.com/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // Important for sending session cookies

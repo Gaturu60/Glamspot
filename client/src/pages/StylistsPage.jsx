@@ -6,7 +6,7 @@ function StylistsPage() {
 
   // Fetch stylists data from the API when the component mounts
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/stylists")
+    fetch("https://glamspot.onrender.com/stylists")
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");

@@ -14,7 +14,7 @@ function LoginPage() {
       password: "",
     },
     onSubmit: (values) => {
-      fetch("http://127.0.0.1:5000/login", {
+      fetch("https://glamspot.onrender.com/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", //include session credentials

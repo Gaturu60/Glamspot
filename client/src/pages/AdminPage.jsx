@@ -12,7 +12,7 @@ function AdminPage() {
 
   // Fetch users, stylists, services and bookings on component mount
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/users", {
+    fetch("https://glamspot.onrender.com/users", {
       method: "GET",
       credentials: "include",
     })
@@ -20,7 +20,7 @@ function AdminPage() {
       .then((data) => setUsers(data.users || []))
       .catch((error) => console.error("Error fetching users:", error));
 
-    fetch("http://127.0.0.1:5000/stylists", {
+    fetch("https://glamspot.onrender.com/stylists", {
       method: "GET",
       credentials: "include",
     })
@@ -28,7 +28,7 @@ function AdminPage() {
       .then((data) => setStylists(data.stylists || []))
       .catch((error) => console.error("Error fetching stylists:", error));
 
-    fetch("http://127.0.0.1:5000/bookings", {
+    fetch("https://glamspot.onrender.com/bookings", {
       method: "GET",
       credentials: "include",
     })
@@ -36,7 +36,7 @@ function AdminPage() {
       .then((data) => setBookings(data || []))
       .catch((error) => console.error("Error fetching bookings:", error));
 
-    fetch("http://127.0.0.1:5000/services", {
+    fetch("https://glamspot.onrender.com/services", {
       method: "GET",
       credentials: "include",
     })
@@ -53,7 +53,7 @@ function AdminPage() {
       formData.append("name", values.name);
       formData.append("specialty", values.specialty);
       formData.append("image", values.image);
-      fetch("http://127.0.0.1:5000/stylists", {
+      fetch("https://glamspot.onrender.com/stylists", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -77,7 +77,7 @@ function AdminPage() {
       formData.append("price", values.price);
       formData.append("image", values.image);
 
-      fetch("http://127.0.0.1:5000/services", {
+      fetch("https://glamspot.onrender.com/services", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -97,7 +97,7 @@ function AdminPage() {
     initialValues: { name: "", email: "" },
     enableReinitialize: true,
     onSubmit: (values) => {
-      fetch(`http://127.0.0.1:5000/users/${editingUserId}`, {
+      fetch(`https://glamspot.onrender.com/users/${editingUserId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -122,7 +122,7 @@ function AdminPage() {
 
   // Delete functions
   const deleteUser = (userId) => {
-    fetch(`http://127.0.0.1:5000/users/${userId}`, {
+    fetch(`https://glamspot.onrender.com/users/${userId}`, {
       method: "DELETE",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -138,7 +138,7 @@ function AdminPage() {
   };
 
   const deleteStylist = (stylistId) => {
-    fetch(`http://127.0.0.1:5000/stylists/${stylistId}`, {
+    fetch(`https://glamspot.onrender.com/stylists/${stylistId}`, {
       method: "DELETE",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -154,7 +154,7 @@ function AdminPage() {
   };
 
   const deleteBooking = (bookingId) => {
-    fetch(`http://127.0.0.1:5000/bookings/${bookingId}`, {
+    fetch(`https://glamspot.onrender.com/bookings/${bookingId}`, {
       method: "DELETE",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -170,7 +170,7 @@ function AdminPage() {
   };
 
   const deleteService = (serviceId) => {
-    fetch(`http://127.0.0.1:5000/services/${serviceId}`, {
+    fetch(`https://glamspot.onrender.com/services/${serviceId}`, {
       method: "DELETE",
       credentials: "include",
     })

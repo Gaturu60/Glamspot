@@ -18,7 +18,7 @@ function ManageAccountPage() {
   }, []);
 
   const fetchUserDetails = () => {
-    fetch("http://127.0.0.1:5000/protected", { credentials: "include" })
+    fetch("https://glamspot.onrender.com/protected", { credentials: "include" })
       .then((response) => response.json())
       .then((data) => {
         setUser(data.user);
@@ -31,7 +31,9 @@ function ManageAccountPage() {
   };
 
   const fetchBookings = () => {
-    fetch("http://127.0.0.1:5000/user/bookings", { credentials: "include" })
+    fetch("https://glamspot.onrender.com/user/bookings", {
+      credentials: "include",
+    })
       .then((response) => response.json())
       .then((data) => setBookings(data.bookings))
       .catch((error) => console.error("Error fetching bookings:", error));
@@ -39,7 +41,7 @@ function ManageAccountPage() {
 
   // Delete booking function
   const handleDeleteBooking = (bookingId) => {
-    fetch(`http://127.0.0.1:5000/user/bookings/${bookingId}`, {
+    fetch(`https://glamspot.onrender.com/user/bookings/${bookingId}`, {
       method: "DELETE",
       credentials: "include",
     })
@@ -56,7 +58,7 @@ function ManageAccountPage() {
 
   // Update account details
   const updateAccount = (field, value) => {
-    fetch("http://127.0.0.1:5000/user/account", {
+    fetch("https://glamspot.onrender.com/user/account", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -75,7 +77,7 @@ function ManageAccountPage() {
   // Delete account function with confirmation
   const handleDeleteAccount = () => {
     if (window.confirm("Are you sure you want to delete your account?")) {
-      fetch("http://127.0.0.1:5000/user/account", {
+      fetch("https://glamspot.onrender.com/user/account", {
         method: "DELETE",
         credentials: "include",
       })
