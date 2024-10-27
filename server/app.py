@@ -43,7 +43,7 @@ app.config['SESSION_COOKIE_SECURE']=True
 # # app = Flask(__name__)
 
 # # Enable CORS for all routes, including preflight (OPTIONS) requests
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "https://glamspot.onrender.com"}})
 
 # Set the secret key to a random string
 app.secret_key = os.urandom(28)
