@@ -1,6 +1,7 @@
 # Standard library imports
 
 # Remote library imports
+import cloudinary.uploader
 from flask import Flask
 from flask_cors import CORS  # type: ignore # Cross-Origin Resource Sharing
 from flask_migrate import Migrate  # For handling database migrations
@@ -8,6 +9,17 @@ from flask_restful import Api  # For building RESTful APIs
 from flask_sqlalchemy import SQLAlchemy  # For ORM
 from sqlalchemy import MetaData  # For metadata configuration
 from flask_bcrypt import Bcrypt  # For password hashing
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+
+
+
 
 # Local imports
 # (Add your local imports here, e.g., models)
@@ -35,7 +47,14 @@ db.init_app(app)
 api = Api(app)
 
 # Instantiate CORS
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5174"}})  # Enable CORS for all routes
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})  # Enable CORS for all routes
+
+# Configure Cloudinary
+cloudinary.config(
+    cloud_name=os.getenv("dfylsdyun"),
+    api_key=os.getenv("428635378714162"),
+    api_secret=os.getenv("72-KJ5jsvWHBUxbjYwAK03yjWjY"),
+)
 
 # Add your routes and API resource endpoints here
 @app.route('/')

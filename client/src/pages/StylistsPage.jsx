@@ -39,6 +39,11 @@ function StylistsPage() {
             key={stylist.id}
             className="list-item p-4 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105"
           >
+            <img
+              src={stylist.image_url}
+              alt={stylist.name}
+              className="w-full h-48 object-cover rounded-lg mb-4"
+            />
             <h2 className="font-semibold text-lg">{stylist.name}</h2>
             <p className="text-gray-600">{stylist.specialty}</p>
           </li>

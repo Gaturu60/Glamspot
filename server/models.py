@@ -48,6 +48,7 @@ class Stylist(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     specialty = db.Column(db.String(120))
+    image_url = db.Column(db.String(200)) # Add an image_url attribute
 
     # One-to-Many Relationship: A stylist can have multiple bookings
     bookings = db.relationship('Booking', back_populates='stylist')
@@ -60,6 +61,7 @@ class Stylist(db.Model, SerializerMixin):
             'id': self.id,
             'name': self.name,
             'specialty': self.specialty,
+            'image_url': self.image_url,
             'bookings': [booking.to_dict() for booking in self.bookings],
             'services': [service.to_dict() for service in self.services]
         }

@@ -47,17 +47,20 @@ function AdminPage() {
 
   // Formik setup for adding a new stylist
   const addStylistFormik = useFormik({
-    initialValues: { name: "", specialty: "" },
+    initialValues: { name: "", specialty: "", image: null },
     onSubmit: (values, { resetForm }) => {
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("specialty", values.specialty);
+      formData.append("image", values.image);
       fetch("http://127.0.0.1:5000/stylists", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        body: formData,
         credentials: "include",
-        body: JSON.stringify(values),
       })
         .then((response) => response.json())
         .then((newStylist) => {
-          setStylists([...stylists, newStylist]);
+          setStylists([...stylists, newStylist.stylist]);
           resetForm(); // Reset form fields after successful submission
         })
         .catch((error) => console.error("Error adding stylist:", error));
@@ -286,6 +289,18 @@ function AdminPage() {
               placeholder="Specialty"
               className="w-full p-2 border rounded"
             />
+            <input
+              name="image"
+              type="file"
+              accept="image/*"
+              onChange={(event) =>
+                addStylistFormik.setFieldValue(
+                  "image",
+                  event.currentTarget.files[0]
+                )
+              }
+              className="w-full p-2 border rounded"
+            />
             <button
               type="submit"
               className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
@@ -297,6 +312,15 @@ function AdminPage() {
           <ul className="mt-4 space-y-4">
             {stylists.map((stylist) => (
               <li key={stylist.id} className="p-4 bg-white rounded shadow">
+                {stylist.image_url ? (
+                  <img
+                    src={stylist.image_url}
+                    alt={stylist.name}
+                    className="w-auto h-48 object-cover rounded-lg mb-4"
+                  />
+                ) : (
+                  <p>No image available</p>
+                )}
                 <p className="text-lg font-medium">
                   {stylist.name} - Specialty: {stylist.specialty}
                 </p>

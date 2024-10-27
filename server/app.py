@@ -7,7 +7,6 @@ from flask import request, session, jsonify
 from flask_cors import CORS
 from flask_restful import Resource  # type: ignore
 from datetime import datetime
-import os
 
 # Local imports
 from config import app, db, api
@@ -17,13 +16,33 @@ from models import (
     Service,
     Booking,
 )  # Ensure Booking replaces Appointment
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+from cloudinary.uploader import upload
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+print("Cloudinary Cloud Name:", os.getenv("CLOUDINARY_CLOUD_NAME"))
+print("Cloudinary API Key:", os.getenv("CLOUDINARY_API_KEY"))
+print("Cloudinary API Secret:", os.getenv("CLOUDINARY_API_SECRET"))
+
+cloudinary.config(
+    cloud_name=os.getenv("dfylsdyun"),
+    api_key=os.getenv("428635378714162"),
+    api_secret=os.getenv("72-KJ5jsvWHBUxbjYwAK03yjWjY"),
+    secure = True
+)
+
 app.config['SESSION_COOKIE_SAMESITE']= 'None'
 app.config['SESSION_COOKIE_SECURE']=True
 
 # # app = Flask(__name__)
 
 # # Enable CORS for all routes, including preflight (OPTIONS) requests
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5174"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": "http://localhost:5173"}})
 
 # Set the secret key to a random string
 app.secret_key = os.urandom(28)
@@ -93,17 +112,35 @@ class StylistResource(Resource):
     def get(self):
         stylists = Stylist.query.all()
         stylist_list = [
-            {"id": stylist.id, "name": stylist.name, "specialty": stylist.specialty}
+            {"id": stylist.id, "name": stylist.name, "specialty": stylist.specialty, "image_url": stylist.image_url}
             for stylist in stylists
         ]
         return {"stylists": stylist_list}, 200
 
     def post(self):
-        data = request.get_json()
-        new_stylist = Stylist(name=data["name"], specialty=data["specialty"])
+        name = request.form.get("name")
+        specialty = request.form.get("specialty")
+        # Reconfigure Cloudinary within the method to ensure variables are present
+        cloudinary.config(
+            cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+            api_key=os.getenv("CLOUDINARY_API_KEY"),
+            api_secret=os.getenv("CLOUDINARY_API_SECRET")
+        )
+        api_key = os.getenv("CLOUDINARY_API_KEY")
+        if not api_key:
+            print("API Key is None inside the method")
+        # Upload the image to Cloudinary
+        image_file = request.files.get("image")
+        if image_file:
+            upload_result = upload(image_file)
+        else:
+            print("No image file provided.")       
+        image_url = upload_result.get("secure_url")
+
+        new_stylist = Stylist(name=name, specialty=specialty, image_url=image_url)
         db.session.add(new_stylist)
         db.session.commit()
-        return {"message": "Stylist created successfully!"}, 201
+        return {"message": "Stylist created successfully!", "stylist": new_stylist.to_dict()}, 201
     
     def delete(self, id):
         stylist = Stylist.query.get(id)
