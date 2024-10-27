@@ -26,7 +26,7 @@ load_dotenv()
 
 # Instantiate app, set attributes
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'  # Database URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://glamspotdb_user:TswhNljt9sVb8EMFlequn1guJbXJ8mgB@dpg-csfa2edsvqrc73fd5r4g-a.oregon-postgres.render.com/glamspotdb'  # Database URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable modification tracking
 app.json.compact = False  # Disable JSON compacting for easier readability
 
