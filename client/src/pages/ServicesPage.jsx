@@ -34,6 +34,7 @@ function ServicesPage() {
               className="w-full h-48 object-cover rounded-lg mb-4"
             />
             <h2 className="font-semibold text-lg">{service.name}</h2>
+            <p className="text-gray-600">{service.description}</p>
             <p className="text-gray-600">Ksh.{service.price}</p>
           </li>
         ))}

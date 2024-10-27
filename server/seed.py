@@ -35,11 +35,11 @@ if __name__ == '__main__':
         admins = []
         for i in range(1):
             admin = User(
-                name=f"Admin{i+1}",
-                email=f"admin{i+1}@example.com",
+                name=f"Glamspot Admin {i+1}",
+                email=f"glamspotadmin{i+1}@glamspot.com",
                 role="admin"  # Admin user
             )
-            admin.set_password("adminpassword")  # Default admin password
+            admin.set_password("glamspot@admin")  # Default admin password
             admins.append(admin)
 
         db.session.bulk_save_objects(users + admins)

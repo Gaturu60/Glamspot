@@ -25,9 +25,10 @@ import os
 
 load_dotenv()
 
-print("Cloudinary Cloud Name:", os.getenv("CLOUDINARY_CLOUD_NAME"))
-print("Cloudinary API Key:", os.getenv("CLOUDINARY_API_KEY"))
-print("Cloudinary API Secret:", os.getenv("CLOUDINARY_API_SECRET"))
+# #testing if cloudinary is properly configured
+# print("Cloudinary Cloud Name:", os.getenv("CLOUDINARY_CLOUD_NAME"))
+# print("Cloudinary API Key:", os.getenv("CLOUDINARY_API_KEY"))
+# print("Cloudinary API Secret:", os.getenv("CLOUDINARY_API_SECRET"))
 
 cloudinary.config(
     cloud_name=os.getenv("dfylsdyun"),
